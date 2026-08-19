@@ -13,9 +13,9 @@
 # limitations under the License.
 
 """
-Parallel Streamlit Demo for PaperBanana
-Accepts user text input, duplicates it 10 times, and runs parallel processing
-to generate multiple diagram candidates for comparison.
+Параллельный Streamlit Demo для PaperBanana.
+Принимает текстовый ввод пользователя, дублирует его 10 раз и запускает параллельную обработку
+для генерации нескольких кандидатов диаграмм для сравнения.
 """
 
 import streamlit as st
@@ -29,7 +29,7 @@ import sys
 import os
 from datetime import datetime
 
-# Add project root to path
+# Добавляем корень проекта в путь
 sys.path.insert(0, str(Path(__file__).parent))
 
 print("DEBUG: Importing agents...")
@@ -90,7 +90,7 @@ st.set_page_config(
 )
 
 def clean_text(text):
-    """Clean text by removing invalid UTF-8 surrogate characters."""
+    """Очищает текст, удаляя недопустимые символы-суррогаты UTF-8."""
     if not text:
         return text
     if isinstance(text, str):
@@ -99,7 +99,7 @@ def clean_text(text):
     return text
 
 def base64_to_image(b64_str):
-    """Convert base64 string to PIL Image."""
+    """Конвертирует строку base64 в PIL Image."""
     if not b64_str:
         return None
     try:
@@ -120,7 +120,7 @@ def create_sample_inputs(
     max_critic_rounds=3,
     task_name="diagram",
 ):
-    """Create multiple copies of the input data for parallel processing."""
+    """Создаёт несколько копий входных данных для параллельной обработки."""
     task_name = "plot" if "plot" in (task_name or "").lower() else "diagram"
     base_input = {
         "filename": "demo_input",
@@ -128,11 +128,11 @@ def create_sample_inputs(
         "content": normalize_legacy_input_content(method_content, task_name),
         "visual_intent": caption,
         "additional_info": generation_additional_info(aspect_ratio, figure_size),
-        "max_critic_rounds": max_critic_rounds,  # Add critic rounds control
+        "max_critic_rounds": max_critic_rounds,  # Управление количеством раундов критика
         "task_name": task_name,
     }
     
-    # Create num_copies identical inputs, each with a unique identifier
+    # Создаём num_copies одинаковых входов, каждый с уникальным идентификатором
     inputs = []
     for i in range(num_copies):
         input_copy = base_input.copy()
@@ -150,9 +150,9 @@ async def process_parallel_candidates(
     image_gen_model_name="",
     task_name="diagram",
 ):
-    """Process multiple candidates in parallel using PaperVizProcessor."""
+    """Обрабатывает несколько кандидатов параллельно с помощью PaperVizProcessor."""
     task_name = "plot" if "plot" in (task_name or "").lower() else "diagram"
-    # Create experiment config
+    # Создаём конфигурацию эксперимента
     exp_config = config.ExpConfig(
         dataset_name="PaperBananaBench",
         task_name=task_name,
@@ -164,7 +164,7 @@ async def process_parallel_candidates(
         work_dir=Path(__file__).parent,
     )
     
-    # Initialize processor with all agents
+    # Инициализируем процессор со всеми агентами
     processor = PaperVizProcessor(
         exp_config=exp_config,
         vanilla_agent=VanillaAgent(exp_config=exp_config),
@@ -176,7 +176,7 @@ async def process_parallel_candidates(
         polish_agent=PolishAgent(exp_config=exp_config),
     )
     
-    # Process all candidates in parallel (concurrency controlled by processor)
+    # Обрабатываем всех кандидатов параллельно (параллелизм контролируется процессором)
     results = []
     concurrent_num = 10  # Process all 10 in parallel
     
@@ -190,25 +190,25 @@ async def process_parallel_candidates(
 
 async def refine_image_with_nanoviz(image_bytes, edit_prompt, aspect_ratio="21:9", image_size="2K"):
     """
-    Refine an image using an Image Editing API.
-    Supports OpenRouter (priority), Google API key, and Vertex AI ADC as fallback.
+    Уточняет изображение с помощью API редактирования изображений.
+    Поддерживает OpenRouter (приоритет), Google API key и Vertex AI ADC как запасной вариант.
     
     Args:
-        image_bytes: Image data in bytes
-        edit_prompt: Text description of desired changes
-        aspect_ratio: Output aspect ratio (21:9, 16:9, 3:2)
-        image_size: Output resolution (2K or 4K)
+        image_bytes: Данные изображения в байтах
+        edit_prompt: Текстовое описание желаемых изменений
+        aspect_ratio: Выходное соотношение сторон (21:9, 16:9, 3:2)
+        image_size: Выходное разрешение (2K или 4K)
     
     Returns:
-        Tuple of (edited_image_bytes, success_message)
+        Кортеж (байты_отредактированного_изображения, сообщение_об_успехе)
     """
     image_model = get_config_val("defaults", "image_gen_model_name", "IMAGE_GEN_MODEL_NAME", "")
 
-    # Encode image as base64 data URL for OpenRouter
+    # Кодируем изображение как data URL base64 для OpenRouter
     image_b64 = base64.b64encode(image_bytes).decode("utf-8")
     image_data_url = f"data:image/jpeg;base64,{image_b64}"
 
-    # --- Path 1: OpenRouter (preferred, matches main pipeline priority) ---
+    # --- Путь 1: OpenRouter (приоритет, как в основном конвейере) ---
     try:
         from utils.generation_utils import call_openrouter_image_generation_with_retry_async
         _has_openrouter = True
@@ -240,7 +240,7 @@ async def refine_image_with_nanoviz(image_bytes, edit_prompt, aspect_ratio="21:9
         except Exception as e:
             print(f"OpenRouter refine failed: {e}, falling back to Google API key...")
 
-    # --- Path 2 & 3: Gemini native SDK (Google API key or Vertex AI ADC) ---
+    # --- Пути 2 и 3: Нативный SDK Gemini (Google API key или Vertex AI ADC) ---
     try:
         from google import genai
         from google.genai import types
@@ -294,22 +294,22 @@ async def refine_image_with_nanoviz(image_bytes, edit_prompt, aspect_ratio="21:9
 
 
 def get_evolution_stages(result, exp_mode):
-    """Extract all evolution stages (images and descriptions) from the result."""
+    """Извлекает все этапы эволюции (изображения и описания) из результата."""
     return build_evolution_stages(result, exp_mode=exp_mode)
 
 def display_candidate_result(result, candidate_id, exp_mode):
-    """Display a single candidate result."""
+    """Отображает результат одного кандидата."""
     selection = resolve_final_output(result, exp_mode=exp_mode)
     final_image_key = selection.image_key
     final_desc_key = selection.text_key
     
-    # Display the final image
+    # Отображаем финальное изображение
     if final_image_key and final_image_key in result:
         img = base64_to_image(result[final_image_key])
         if img:
             st.image(img, use_container_width=True, caption=f"Candidate {candidate_id} (Final)")
             
-            # Add download button
+            # Добавляем кнопку скачивания
             buffered = BytesIO()
             img.save(buffered, format="PNG")
             st.download_button(
@@ -325,7 +325,7 @@ def display_candidate_result(result, candidate_id, exp_mode):
     else:
         st.warning(f"No image generated for Candidate {candidate_id}")
     
-    # Show evolution timeline in an expander
+    # Показываем таймлайн эволюции в раскрывающемся блоке
     stages = get_evolution_stages(result, exp_mode)
     if len(stages) > 1:
         with st.expander(f"🔄 View Evolution Timeline ({len(stages)} stages)", expanded=False):
@@ -335,18 +335,18 @@ def display_candidate_result(result, candidate_id, exp_mode):
                 st.markdown(f"### {stage['name']}")
                 st.caption(stage['description'])
                 
-                # Display the image for this stage
+                # Отображаем изображение для этого этапа
                 stage_img = base64_to_image(result.get(stage['image_key']))
                 if stage_img:
                     st.image(stage_img, use_container_width=True)
                 
-                # Show description
+                # Показываем описание
                 if stage['desc_key'] in result:
                     with st.expander(f"📝 Description", expanded=False):
                         cleaned_desc = clean_text(result[stage['desc_key']])
                         st.write(cleaned_desc)
                 
-                # Show critic suggestions if available
+                # Показываем предложения критика, если есть
                 if 'suggestions_key' in stage and stage['suggestions_key'] in result:
                     suggestions = result[stage['suggestions_key']]
                     with st.expander(f"💡 Critic Suggestions", expanded=False):
@@ -356,14 +356,14 @@ def display_candidate_result(result, candidate_id, exp_mode):
                         else:
                             st.write(cleaned_sugg)
                 
-                # Add separator between stages (except for the last one)
+                # Добавляем разделитель между этапами (кроме последнего)
                 if idx < len(stages) - 1:
                     st.divider()
     else:
-        # If only one stage, show description in simpler expander
+        # Если только один этап, показываем описание в простом раскрывающемся блоке
         with st.expander(f"📝 View Description", expanded=False):
             if final_desc_key and final_desc_key in result:
-                # Clean the text to remove invalid UTF-8 characters
+                # Очищаем текст от недопустимых символов UTF-8
                 cleaned_desc = clean_text(result[final_desc_key])
                 st.write(cleaned_desc)
             else:
@@ -373,14 +373,14 @@ def main():
     st.title("🍌 PaperBanana Demo")
     st.markdown("AI-powered scientific diagram generation and refinement")
     
-    # Create tabs
+    # Создаём вкладки
     tab1, tab2 = st.tabs(["📊 Generate Candidates", "✨ Refine Image"])
     
-    # ==================== TAB 1: Generate Candidates ====================
+    # ==================== ВКЛАДКА 1: Генерация кандидатов ====================
     with tab1:
         st.markdown("### Generate multiple diagram candidates from your method section and caption")
         
-        # Sidebar configuration for Tab 1
+        # Конфигурация боковой панели для вкладки 1
         with st.sidebar:
             st.title("⚙️ Generation Settings")
             
@@ -497,10 +497,10 @@ def main():
         
         st.divider()
         
-        # Input section
+        # Секция ввода
         st.markdown("## 📝 Input")
         
-        # Example content
+        # Примеры содержимого
         example_method = r"""## Methodology: The PaperBanana Framework
         
         In this section, we present the architecture of PaperBanana, a reference-driven agentic framework for automated academic illustration. As illustrated in Figure \ref{fig:methodology_diagram}, PaperBanana orchestrates a collaborative team of five specialized agents—Retriever, Planner, Stylist, Visualizer, and Critic—to transform raw scientific content into publication-quality diagrams and plots. (See Appendix \ref{app_sec:agent_prompts} for prompts)
@@ -599,7 +599,7 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                 help="The caption or description of the figure to generate. Markdown format is recommended."
             )
         
-        # Process button
+        # Кнопка обработки
         if st.button("🚀 Generate Candidates", type="primary", use_container_width=True):
             if not method_content or not caption:
                 st.error("Please provide both method content and caption!")
@@ -671,7 +671,7 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
             st.markdown("## 🎨 Generated Candidates")
             st.caption(f"Generated at: {timestamp} | Pipeline: {mode_info.get(current_mode, current_mode)}")
             
-            # Show JSON file download if available
+            # Показываем скачивание JSON-файла, если доступно
             if "json_file" in st.session_state:
                 json_file_path = Path(st.session_state["json_file"])
                 if json_file_path.exists():
@@ -689,7 +689,7 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                             use_container_width=True
                         )
             
-            # Display results in a grid (3 columns)
+            # Отображаем результаты в сетке (3 столбца)
             num_cols = 3
             num_results = len(results)
             
@@ -701,7 +701,7 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                         with cols[col_idx]:
                             display_candidate_result(results[result_idx], result_idx, current_mode)
             
-            # Add ZIP download button
+            # Добавляем кнопку скачивания ZIP
             st.divider()
             st.markdown("### 💾 Batch Download")
             
@@ -738,12 +738,12 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
             except Exception as e:
                 st.error(f"Failed to create ZIP: {e}")
     
-    # ==================== TAB 2: Refine Image ====================
+    # ==================== ВКЛАДКА 2: Уточнение изображения ====================
     with tab2:
         st.markdown("### Refine and upscale your diagram to high resolution (2K/4K)")
         st.caption("Upload an image from the candidates or any diagram, describe changes, and generate a high-res version")
         
-        # Sidebar for refinement settings
+        # Боковая панель настроек уточнения
         with st.sidebar:
             st.title("✨ Refinement Settings")
             
@@ -765,7 +765,7 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
         
         st.divider()
         
-        # Upload section
+        # Секция загрузки
         st.markdown("## 📤 Upload Image")
         uploaded_file = st.file_uploader(
             "Choose an image file",
@@ -774,7 +774,7 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
         )
         
         if uploaded_file is not None:
-            # Display uploaded image
+            # Отображаем загруженное изображение
             uploaded_image = Image.open(uploaded_file)
             col1, col2 = st.columns(2)
             
@@ -798,12 +798,12 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                     else:
                         with st.spinner(f"Refining image to {refine_resolution} resolution... This may take a minute."):
                             try:
-                                # Convert PIL image to bytes
+                                # Конвертируем PIL изображение в байты
                                 img_byte_arr = BytesIO()
                                 uploaded_image.save(img_byte_arr, format='JPEG')
                                 image_bytes = img_byte_arr.getvalue()
                                 
-                                # Call nanoviz API
+                                # Вызываем API nanoviz
                                 refined_bytes, message = asyncio.run(
                                     refine_image_with_nanoviz(
                                         image_bytes=image_bytes,
@@ -825,7 +825,7 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                                 import traceback
                                 st.code(traceback.format_exc())
             
-            # Display refined result if available
+            # Отображаем результат уточнения, если доступен
             if "refined_image" in st.session_state:
                 st.divider()
                 st.markdown("## 🎨 Refined Result")
@@ -842,7 +842,7 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                     refined_image = Image.open(BytesIO(st.session_state["refined_image"]))
                     st.image(refined_image, use_container_width=True)
                     
-                    # Download button
+                    # Кнопка скачивания
                     st.download_button(
                         label=f"⬇️ Download {refine_resolution} Image",
                         data=st.session_state["refined_image"],

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 """
-Main script to launch PaperVizAgent
+Основной скрипт для запуска PaperVizAgent
 """
 
 import asyncio
@@ -35,63 +35,63 @@ from utils import config, paperviz_processor
 
 
 async def main():
-    """Main function"""
-    # add command line args
-    parser = argparse.ArgumentParser(description="PaperVizAgent processing script")
+    """Основная функция"""
+    # Добавляем аргументы командной строки
+    parser = argparse.ArgumentParser(description="Скрипт обработки PaperVizAgent")
     parser.add_argument(
         "--dataset_name",
         type=str,
         default="PaperBananaBench",
-        help="name of the dataset to use (default: PaperBananaBench)",
+        help="имя набора данных (по умолчанию: PaperBananaBench)",
     )
     parser.add_argument(
         "--task_name",
         type=str,
         default="diagram",
         choices=["diagram", "plot"],
-        help="task type: diagram or plot (default: diagram)",
+        help="тип задачи: diagram или plot (по умолчанию: diagram)",
     )
     parser.add_argument(
         "--split_name",
         type=str,
         default="test",
-        help="split of the dataset to use (default: test)",
+        help="разбиение набора данных (по умолчанию: test)",
     )
     parser.add_argument(
         "--exp_mode",
         type=str,
         default="dev",
-        help="name of the experiment to use (default: dev)",
+        help="режим эксперимента (по умолчанию: dev)",
     )
     parser.add_argument(
         "--retrieval_setting",
         type=str,
         default="auto",
         choices=["auto", "manual", "random", "none"],
-        help="retrieval setting for planner agent (default: auto)",
+        help="настройка извлечения для агента планировщика (по умолчанию: auto)",
     )
     parser.add_argument(
         "--planner-metaphor",
         action="store_true",
-        help="enable diagram-only Planner visual-metaphor discovery before detailed description output",
+        help="включить обнаружение визуальной метафоры планировщиком для диаграмм перед выводом подробного описания",
     )
     parser.add_argument(
         "--max_critic_rounds",
         type=int,
         default=3,
-        help="maximum number of critic rounds (default: 3)",
+        help="максимальное количество раундов критика (по умолчанию: 3)",
     )
     parser.add_argument(
         "--main_model_name",
         type=str,
         default="",
-        help="main model name to use (default: "")",
+        help="имя основной модели (по умолчанию: \"\")",
     )
     parser.add_argument(
         "--image_gen_model_name",
         type=str,
         default="",
-        help="image generation model name to use (default: "")",
+        help="имя модели генерации изображений (по умолчанию: \"\")",
     )
     args = parser.parse_args()
 
@@ -116,7 +116,7 @@ async def main():
     with open(input_filename, "r", encoding="utf-8") as f:
         data_list = json.load(f)
 
-    # Create processor
+    # Создаём процессор
     processor = paperviz_processor.PaperVizProcessor(
         exp_config=exp_config,
         vanilla_agent=VanillaAgent(exp_config=exp_config),
@@ -128,7 +128,7 @@ async def main():
         polish_agent=PolishAgent(exp_config=exp_config),
     )
 
-    # Batch process documents
+    # Пакетная обработка документов
     concurrent_num = 10
     print(f"Using max concurrency: {concurrent_num}")
     all_result_list = []
@@ -142,7 +142,7 @@ async def main():
             json_string = json_string.encode("utf-8", "ignore").decode("utf-8")
             await f.write(json_string)
 
-    # Process samples incrementally
+    # Пошаговая обработка выборок
     idx = 0
     async for result_data in processor.process_queries_batch(
         data_list, max_concurrent=concurrent_num
@@ -152,7 +152,7 @@ async def main():
         if idx % 10 == 0:
             await save_results_and_scores(all_result_list)
 
-    # Final save
+    # Финальное сохранение
     await save_results_and_scores(all_result_list)
     print("Processing completed.")
 

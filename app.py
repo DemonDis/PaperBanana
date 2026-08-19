@@ -13,8 +13,8 @@
 # limitations under the License.
 
 """
-Gradio-based Web UI for PaperBanana.
-Replaces the Streamlit demo.py with a modern dark-themed interface.
+Веб-интерфейс на базе Gradio для PaperBanana.
+Заменяет Streamlit demo.py современным тёмным интерфейсом.
 """
 
 import gradio as gr
@@ -30,7 +30,7 @@ import os
 from datetime import datetime
 
 # ---------------------------------------------------------------------------
-# Logo (base64-encoded for reliable serving in Gradio)
+# Логотип (base64-кодировка для надёжной загрузки в Gradio)
 # ---------------------------------------------------------------------------
 _logo_path = Path(__file__).parent / "assets" / "logo.jpg"
 if _logo_path.exists():
@@ -39,7 +39,7 @@ else:
     LOGO_B64 = ""
 
 # ---------------------------------------------------------------------------
-# Project imports (reuse demo.py's logic)
+# Импорты проекта (переиспользуем логику demo.py)
 # ---------------------------------------------------------------------------
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -82,7 +82,7 @@ def get_config_val(section, key, env_var, default=""):
 
 
 # ---------------------------------------------------------------------------
-# Reuse core helpers from demo.py
+# Переиспользование основных вспомогательных функций из demo.py
 # ---------------------------------------------------------------------------
 
 def clean_text(text):
@@ -168,7 +168,7 @@ async def refine_image_with_nanoviz(image_bytes, edit_prompt, aspect_ratio="21:9
     image_model = get_config_val("defaults", "image_gen_model_name", "IMAGE_GEN_MODEL_NAME", "")
     image_b64 = base64.b64encode(image_bytes).decode("utf-8")
 
-    # Path 1: OpenRouter
+            # Путь 1: OpenRouter
     try:
         from utils.generation_utils import call_openrouter_image_generation_with_retry_async
         _has_openrouter = True
@@ -190,7 +190,7 @@ async def refine_image_with_nanoviz(image_bytes, edit_prompt, aspect_ratio="21:9
         except Exception as e:
             print(f"OpenRouter refine failed: {e}, falling back...")
 
-    # Path 2 & 3: Gemini native SDK
+    # Пути 2 и 3: Нативный SDK Gemini
     try:
         from google import genai
         from google.genai import types
@@ -240,7 +240,7 @@ def get_evolution_stages(result, exp_mode):
 
 
 def get_final_image(result, exp_mode):
-    """Return (PIL.Image, desc_text) for the best available stage."""
+    """Возвращает (PIL.Image, текст_описания) для лучшего доступного этапа."""
     selection = resolve_final_output(result, exp_mode=exp_mode)
     img = base64_to_image(result.get(selection.image_key)) if selection.image_key else None
     desc = clean_text(result.get(selection.text_key, "")) if selection.text_key else ""
@@ -248,7 +248,7 @@ def get_final_image(result, exp_mode):
 
 
 # ---------------------------------------------------------------------------
-# Example content
+# Примеры содержимого
 # ---------------------------------------------------------------------------
 
 EXAMPLE_METHOD = r"""## Methodology: The PaperBanana Framework
@@ -300,7 +300,7 @@ PIPELINE_DESCRIPTIONS = {
 }
 
 # ---------------------------------------------------------------------------
-# Custom CSS for dark theme matching the screenshot
+# Пользовательский CSS для тёмной темы
 # ---------------------------------------------------------------------------
 
 CUSTOM_CSS = """
@@ -420,7 +420,7 @@ CUSTOM_CSS = """
 """
 
 # ---------------------------------------------------------------------------
-# Build the Gradio Blocks UI
+# Построение интерфейса Gradio Blocks
 # ---------------------------------------------------------------------------
 
 def build_app():
@@ -450,14 +450,14 @@ def build_app():
                         PaperBanana
                     </p>
                     <div style="display: flex; gap: 6px; align-items: center;">
-                        <span style="display:inline-block; padding:3px 12px; border-radius:12px; font-size:11px; font-weight:600; background:#f59e0b; color:#fff;">Multi-Agent</span>
-                        <span style="display:inline-block; padding:3px 12px; border-radius:12px; font-size:11px; font-weight:600; background:#f59e0b; color:#fff;">Scientific Diagrams</span>
+                        <span style="display:inline-block; padding:3px 12px; border-radius:12px; font-size:11px; font-weight:600; background:#f59e0b; color:#fff;">Мультиагентная</span>
+                        <span style="display:inline-block; padding:3px 12px; border-radius:12px; font-size:11px; font-weight:600; background:#f59e0b; color:#fff;">Научные диаграммы</span>
                     </div>
                 </div>
             </div>
             <div style="display: flex; gap: 10px; align-items: center;">
                 <a href="https://arxiv.org/abs/2601.23265" target="_blank" class="header-link-btn">
-                    &#128196; Paper
+                    &#128196; Статья
                 </a>
                 <a href="https://github.com/dwzhu-pku/PaperBanana" target="_blank" class="header-link-btn">
                     &#128187; GitHub
@@ -834,7 +834,7 @@ def build_app():
 
 
 # ---------------------------------------------------------------------------
-# Entry point
+# Точка входа
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
     app = build_app()
