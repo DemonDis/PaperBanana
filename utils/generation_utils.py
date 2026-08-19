@@ -56,6 +56,7 @@ anthropic_client = None
 openai_client = None
 openrouter_client = None
 openrouter_api_key = ""
+openrouter_base_url = ""
 
 
 def reinitialize_clients():
@@ -67,7 +68,7 @@ def reinitialize_clients():
     Returns a list of client names that were successfully initialized.
     """
     global gemini_client, anthropic_client, openai_client
-    global openrouter_client, openrouter_api_key
+    global openrouter_client, openrouter_api_key, openrouter_base_url
 
     initialized = []
 
@@ -96,9 +97,10 @@ def reinitialize_clients():
         openai_client = None
 
     openrouter_api_key = get_config_val("api_keys", "openrouter_api_key", "OPENROUTER_API_KEY", "")
+    openrouter_base_url = get_config_val("api_keys", "openrouter_base_url", "OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
     if openrouter_api_key:
         openrouter_client = AsyncOpenAI(
-            base_url="https://openrouter.ai/api/v1",
+            base_url=openrouter_base_url,
             api_key=openrouter_api_key,
         )
         print("Initialized OpenRouter Client with API Key")
@@ -649,8 +651,10 @@ async def call_openrouter_image_generation_with_retry_async(
     for attempt in range(max_attempts):
         try:
             async with httpx.AsyncClient(timeout=300) as client:
+                # Ensure the base url doesn't end with a slash before appending the endpoint
+                endpoint_url = f"{openrouter_base_url.rstrip('/')}/chat/completions"
                 resp = await client.post(
-                    "https://openrouter.ai/api/v1/chat/completions",
+                    endpoint_url,
                     headers=headers,
                     json=payload,
                 )
