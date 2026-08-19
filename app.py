@@ -251,48 +251,48 @@ def get_final_image(result, exp_mode):
 # Примеры содержимого
 # ---------------------------------------------------------------------------
 
-EXAMPLE_METHOD = r"""## Methodology: The PaperBanana Framework
+EXAMPLE_METHOD = r"""## Методология: Фреймворк PaperBanana
 
-In this section, we present the architecture of PaperBanana, a reference-driven agentic framework for automated academic illustration. As illustrated in Figure \ref{fig:methodology_diagram}, PaperBanana orchestrates a collaborative team of five specialized agents—Retriever, Planner, Stylist, Visualizer, and Critic—to transform raw scientific content into publication-quality diagrams and plots. (See Appendix \ref{app_sec:agent_prompts} for prompts)
+В этом разделе мы представляем архитектуру PaperBanana — мультиагентной системы, управляемой эталонами, для автоматической академической иллюстрации. Как показано на рисунке \ref{fig:methodology_diagram}, PaperBanana координирует команду из пяти специализированных агентов — Retriever, Planner, Stylist, Visualizer и Critic — для преобразования сырых научных данных в диаграммы и графики уровня публикации. (См. приложение \ref{app_sec:agent_prompts} для промптов)
 
-### Retriever Agent
+### Агент Retriever
 
-Given the source context $S$ and the communicative intent $C$, the Retriever Agent identifies $N$ most relevant examples $\mathcal{E} = \{E_n\}_{n=1}^{N} \subset \mathcal{R}$ from the fixed reference set $\mathcal{R}$ to guide the downstream agents. As defined in Section \ref{sec:task_formulation}, each example $E_i \in \mathcal{R}$ is a triplet $(S_i, C_i, I_i)$.
-To leverage the reasoning capabilities of VLMs, we adopt a generative retrieval approach where the VLM performs selection over candidate metadata:
+Задав исходный контекст $S$ и коммуникативное намерение $C$, агент Retriever определяет $N$ наиболее релевантных примеров $\mathcal{E} = \{E_n\}_{n=1}^{N} \subset \mathcal{R}$ из фиксированного набора эталонов $\mathcal{R}$ для направления последующих агентов. Как определено в разделе \ref{sec:task_formulation}, каждый пример $E_i \in \mathcal{R}$ является тройкой $(S_i, C_i, I_i)$.
+Для использования возможностей рассуждений VLM мы применяем подход генеративного извлечения, при котором VLM выполняет выбор по метаданным кандидатов:
 $$
 \mathcal{E} = \text{VLM}_{\text{Ret}} \left( S, C, \{ (S_i, C_i) \}_{E_i \in \mathcal{R}} \right)
 $$
 
-### Planner Agent
+### Агент Planner
 
-The Planner Agent serves as the cognitive core of the system. It takes the source context $S$, communicative intent $C$, and retrieved examples $\mathcal{E}$ as inputs:
+Агент Planner служит когнитивным ядром системы. Он принимает исходный контекст $S$, коммуникативное намерение $C$ и извлечённые примеры $\mathcal{E}$ в качестве входных данных:
 $$
 P = \text{VLM}_{\text{plan}}(S, C, \{ (S_i, C_i, I_i) \}_{E_i \in \mathcal{E}})
 $$
 
-### Stylist Agent
+### Агент Stylist
 
-The Stylist refines each initial description $P$ into a stylistically optimized version $P^*$:
+Агент Stylist уточняет каждое начальное описание $P$ до стилистически оптимизированной версии $P^*$:
 $$
 P^* = \text{VLM}_{\text{style}}(P, \mathcal{G})
 $$
 
-### Visualizer Agent
+### Агент Visualizer
 
-The Visualizer Agent leverages an image generation model:
+Агент Visualizer использует модель генерации изображений:
 $$
 I_t = \text{Image-Gen}(P_t)
 $$
 
-### Critic Agent
+### Агент Critic
 
-The Critic provides targeted feedback and produces a refined description:
+Агент Critic предоставляет целевую обратную связь и формирует уточнённое описание:
 $$
 P_{t+1} = \text{VLM}_{\text{critic}}(I_t, S, C, P_t)
 $$
-The Visualizer-Critic loop iterates for $T=3$ rounds."""
+Цикл Visualizer-Critic выполняется $T=3$ итерации."""
 
-EXAMPLE_CAPTION = "Figure 1: Overview of our PaperBanana framework. Given the source context and communicative intent, we first apply a Linear Planning Phase to retrieve relevant reference examples and synthesize a stylistically optimized description. We then use an Iterative Refinement Loop (consisting of Visualizer and Critic agents) to transform the description into visual output and conduct multi-round refinements to produce the final academic illustration."
+EXAMPLE_CAPTION = "Рисунок 1: Обзор нашего фреймворка PaperBanana. Задав исходный контекст и коммуникативное намерение, мы сначала применяем Фазу линейного планирования для извлечения релевантных эталонных примеров и синтеза стилистически оптимизированного описания. Затем мы используем Итеративный цикл уточнения (состоящий из агентов Visualizer и Critic) для преобразования описания в визуальный вывод и проведения многораундового уточнения для создания финальной академической иллюстрации."
 
 PIPELINE_DESCRIPTIONS = {
     "demo_planner_critic": "Retriever → Planner → Visualizer → Critic → Visualizer (без Stylist)",

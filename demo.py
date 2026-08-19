@@ -501,57 +501,57 @@ def main():
         st.markdown("## 📝 Ввод")
         
         # Примеры содержимого
-        example_method = r"""## Methodology: The PaperBanana Framework
+        example_method = r"""## Методология: Фреймворк PaperBanana
         
-        In this section, we present the architecture of PaperBanana, a reference-driven agentic framework for automated academic illustration. As illustrated in Figure \ref{fig:methodology_diagram}, PaperBanana orchestrates a collaborative team of five specialized agents—Retriever, Planner, Stylist, Visualizer, and Critic—to transform raw scientific content into publication-quality diagrams and plots. (See Appendix \ref{app_sec:agent_prompts} for prompts)
+        В этом разделе мы представляем архитектуру PaperBanana — мультиагентной системы, управляемой эталонами, для автоматической академической иллюстрации. Как показано на рисунке \ref{fig:methodology_diagram}, PaperBanana координирует команду из пяти специализированных агентов — Retriever, Planner, Stylist, Visualizer и Critic — для преобразования сырых научных данных в диаграммы и графики уровня публикации. (См. приложение \ref{app_sec:agent_prompts} для промптов)
 
-### Retriever Agent
+### Агент Retriever
 
-Given the source context $S$ and the communicative intent $C$, the Retriever Agent identifies $N$ most relevant examples $\mathcal{E} = \{E_n\}_{n=1}^{N} \subset \mathcal{R}$ from the fixed reference set $\mathcal{R}$ to guide the downstream agents. As defined in Section \ref{sec:task_formulation}, each example $E_i \in \mathcal{R}$ is a triplet $(S_i, C_i, I_i)$.
-To leverage the reasoning capabilities of VLMs, we adopt a generative retrieval approach where the VLM performs selection over candidate metadata:
+Задав исходный контекст $S$ и коммуникативное намерение $C$, агент Retriever определяет $N$ наиболее релевантных примеров $\mathcal{E} = \{E_n\}_{n=1}^{N} \subset \mathcal{R}$ из фиксированного набора эталонов $\mathcal{R}$ для направления последующих агентов. Как определено в разделе \ref{sec:task_formulation}, каждый пример $E_i \in \mathcal{R}$ является тройкой $(S_i, C_i, I_i)$.
+Для использования возможностей рассуждений VLM мы применяем подход генеративного извлечения, при котором VLM выполняет выбор по метаданным кандидатов:
 $$
 \mathcal{E} = \text{VLM}_{\text{Ret}} \left( S, C, \{ (S_i, C_i) \}_{E_i \in \mathcal{R}} \right)
 $$
-Specifically, the VLM is instructed to rank candidates by matching both research domain (e.g., Agent & Reasoning) and diagram type (e.g., pipeline, architecture), with visual structure being prioritized over topic similarity. By explicitly reasoned selection of reference illustrations $I_i$ whose corresponding contexts $(S_i, C_i)$ best match the current requirements, the Retriever provides a concrete foundation for both structural logic and visual style.
+Конкретно, VLM ранжирует кандидатов по совпадению как исследовательского домена (например, Агенты и Рассуждения), так и типа диаграммы (например, конвейер, архитектура), при этом визуальная структура приоритетнее тематического сходства. Благодаря явному обоснованному выбору эталонных иллюстраций $I_i$, чьи соответствующие контексты $(S_i, C_i)$ лучше всего соответствуют текущим требованиям, Retriever обеспечивает конкретную основу как для структурной логики, так и для визуального стиля.
 
-### Planner Agent
+### Агент Planner
 
-The Planner Agent serves as the cognitive core of the system. It takes the source context $S$, communicative intent $C$, and retrieved examples $\mathcal{E}$ as inputs. By performing in-context learning from the demonstrations in $\mathcal{E}$, the Planner translates the unstructured or structured data in $S$ into a comprehensive and detailed textual description $P$ of the target illustration:
+Агент Planner служит когнитивным ядром системы. Он принимает исходный контекст $S$, коммуникативное намерение $C$ и извлечённые примеры $\mathcal{E}$ в качестве входных данных. Выполняя обучение по контексту на демонстрациях из $\mathcal{E}$, Planner преобразует неструктурированные или структурированные данные из $S$ в подробное и исчерпывающее текстовое описание $P$ целевой иллюстрации:
 $$
 P = \text{VLM}_{\text{plan}}(S, C, \{ (S_i, C_i, I_i) \}_{E_i \in \mathcal{E}})
 $$
 
-### Stylist Agent
+### Агент Stylist
 
-To ensure the output adheres to the aesthetic standards of modern academic manuscripts, the Stylist Agent acts as a design consultant.
-A primary challenge lies in defining a comprehensive “academic style,” as manual definitions are often incomplete.
-To address this, the Stylist traverses the entire reference collection $\mathcal{R}$ to automatically synthesize an *Aesthetic Guideline* $\mathcal{G}$ covering key dimensions such as color palette, shapes and containers, lines and arrows, layout and composition, and typography and icons (see Appendix \ref{app_sec:auto_summarized_style_guide} for the summarized guideline and implementation details). Armed with this guideline, the Stylist refines each initial description $P$ into a stylistically optimized version $P^*$:
+Для обеспечения соответствия выходных данных эстетическим стандартам современных академических рукописей агент Stylist выступает в роли дизайн-консультанта.
+Основная сложность заключается в определении всеобъемлющего «академического стиля», поскольку ручные определения часто бывают неполными.
+Для решения этой проблемы Stylist обходит всю коллекцию эталонов $\mathcal{R}$ для автоматического синтеза *Эстетических рекомендаций* $\mathcal{G}$, охватывающих ключевые измерения: палитра цветов, формы и контейнеры, линии и стрелки, компоновка и композиция, а также типографика и иконки (см. приложение \ref{app_sec:auto_summarized_style_guide} для сводки рекомендаций и деталей реализации). Используя эти рекомендации, Stylist уточняет каждое начальное описание $P$ до стилистически оптимизированной версии $P^*$:
 $$
 P^* = \text{VLM}_{\text{style}}(P, \mathcal{G})
 $$
-This ensures that the final illustration is not only accurate but also visually professional.
+Это гарантирует, что финальная иллюстрация будет не только точной, но и визуально профессиональной.
 
-### Visualizer Agent
+### Агент Visualizer
 
-After receiving the stylistically optimized description $P^*$, the Visualizer Agent collaborates with the Critic Agent to render academic illustrations and iteratively refine their quality. The Visualizer Agent leverages an image generation model to transform textual descriptions into visual output. In each iteration $t$, given a description $P_t$, the Visualizer generates:
+Получив стилистически оптимизированное описание $P^*$, агент Visualizer совместно с агентом Critic рендерит академические иллюстрации и итеративно уточняет их качество. Агент Visualizer использует модель генерации изображений для преобразования текстовых описаний в визуальный вывод. На каждой итерации $t$, задав описание $P_t$, Visualizer генерирует:
 $$
 I_t = \text{Image-Gen}(P_t)
 $$
-where the initial description $P_0$ is set to $P^*$.
+где начальное описание $P_0$ установлено равным $P^*$.
 
-### Critic Agent
+### Агент Critic
 
-The Critic Agent forms a closed-loop refinement mechanism with the Visualizer by closely examining the generated image $I_t$ and providing refined description $P_{t+1}$ to the Visualizer. Upon receiving the generated image $I_t$ at iteration $t$, the Critic inspects it against the original source context $(S, C)$ to identify factual misalignments, visual glitches, or areas for improvement. It then provides targeted feedback and produces a refined description $P_{t+1}$ that addresses the identified issues:
+Агент Critic формирует замкнутый цикл уточнения с Visualizer, тщательно анализируя сгенерированное изображение $I_t$ и предоставляя уточнённое описание $P_{t+1}$ для Visualizer. Получив сгенерированное изображение $I_t$ на итерации $t$, Critic проверяет его по отношению к исходному контексту $(S, C)$ для выявления фактологических расхождений, визуальных артефактов или зон улучшения. Затем он предоставляет целевую обратную связь и формирует уточнённое описание $P_{t+1}$, устраняющее выявленные проблемы:
 $$
 P_{t+1} = \text{VLM}_{\text{critic}}(I_t, S, C, P_t)
 $$
-This revised description is then fed back to the Visualizer for regeneration. The Visualizer-Critic loop iterates for $T=3$ rounds, with the final output being $I = I_T$. This iterative refinement process ensures that the final illustration meets the high standards required for academic dissemination.
+Это пересмотренное описание затем подаётся обратно в Visualizer для регенерации. Цикл Visualizer-Critic выполняется $T=3$ итерации, при этом финальный вывод составляет $I = I_T$. Этот процесс итеративного уточнения гарантирует, что финальная иллюстрация соответствует высоким стандартам, необходимым для академической публикации.
 
-### Extension to Statistical Plots
+### Расширение на статистические графики
 
-The framework extends to statistical plots by adjusting the Visualizer and Critic agents. For numerical precision, the Visualizer converts the description $P_t$ into executable Python Matplotlib code: $I_t = \text{VLM}_{\text{code}}(P_t)$. The Critic evaluates the rendered plot and generates a refined description $P_{t+1}$ addressing inaccuracies or imperfections: $P_{t+1} = \text{VLM}_{\text{critic}}(I_t, S, C, P_t)$. The same $T=3$ round iterative refinement process applies. While we prioritize this code-based approach for accuracy, we also explore direct image generation in Section \ref{sec:discussion}. See Appendix \ref{app_sec:plot_agent_prompt} for adjusted prompts."""
+Фреймворк распространяется на статистические графики путём настройки агентов Visualizer и Critic. Для численной точности Visualizer преобразует описание $P_t$ в исполняемый код Python Matplotlib: $I_t = \text{VLM}_{\text{code}}(P_t)$. Critic оценивает отрисованный график и генерирует уточнённое описание $P_{t+1}$, устраняя неточности или недостатки: $P_{t+1} = \text{VLM}_{\text{critic}}(I_t, S, C, P_t)$. Применяется тот же процесс итеративного уточнения на $T=3$ раундов. Хотя мы приоритизируем этот подход на основе кода для обеспечения точности, мы также исследуем прямую генерацию изображений в разделе \ref{sec:discussion}. См. приложение \ref{app_sec:plot_agent_prompt} для скорректированных промптов."""
 
-        example_caption = "Figure 1: Overview of our PaperBanana framework. Given the source context and communicative intent, we first apply a Linear Planning Phase to retrieve relevant reference examples and synthesize a stylistically optimized description. We then use an Iterative Refinement Loop (consisting of Visualizer and Critic agents) to transform the description into visual output and conduct multi-round refinements to produce the final academic illustration."
+        example_caption = "Рисунок 1: Обзор нашего фреймворка PaperBanana. Задав исходный контекст и коммуникативное намерение, мы сначала применяем Фазу линейного планирования для извлечения релевантных эталонных примеров и синтеза стилистически оптимизированного описания. Затем мы используем Итеративный цикл уточнения (состоящий из агентов Visualizer и Critic) для преобразования описания в визуальный вывод и проведения многораундового уточнения для создания финальной академической иллюстрации."
         
         col_input1, col_input2 = st.columns([3, 2])
         
