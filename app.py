@@ -449,19 +449,7 @@ def build_app():
                     <p style="font-size: 28px; font-weight: 800; color: #111; margin: 0 0 4px 0;">
                         PaperBanana
                     </p>
-                    <div style="display: flex; gap: 6px; align-items: center;">
-                        <span style="display:inline-block; padding:3px 12px; border-radius:12px; font-size:11px; font-weight:600; background:#f59e0b; color:#fff;">Мультиагентная</span>
-                        <span style="display:inline-block; padding:3px 12px; border-radius:12px; font-size:11px; font-weight:600; background:#f59e0b; color:#fff;">Научные диаграммы</span>
-                    </div>
                 </div>
-            </div>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <a href="https://arxiv.org/abs/2601.23265" target="_blank" class="header-link-btn">
-                    &#128196; Статья
-                </a>
-                <a href="https://github.com/dwzhu-pku/PaperBanana" target="_blank" class="header-link-btn">
-                    &#128187; GitHub
-                </a>
             </div>
         </div>
         """)

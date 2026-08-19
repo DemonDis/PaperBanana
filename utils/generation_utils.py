@@ -702,6 +702,13 @@ async def call_openrouter_image_generation_with_retry_async(
                         return [b64_data]
 
             print(f"[Warning]: OpenRouter image generation returned no images, retrying...")
+            print(f"[Debug] model={model_name}, response keys: {list(data.keys())}, message keys: {list(message.keys())}")
+            if isinstance(content, str):
+                print(f"[Debug] content (first 200 chars): {content[:200]}")
+            elif isinstance(content, list):
+                print(f"[Debug] content is list of {len(content)} items, first item keys: {list(content[0].keys()) if content and isinstance(content[0], dict) else type(content[0]) if content else 'empty'}")
+            else:
+                print(f"[Debug] content type: {type(content)}")
             if attempt < max_attempts - 1:
                 await asyncio.sleep(retry_delay)
             continue
