@@ -295,8 +295,8 @@ The Visualizer-Critic loop iterates for $T=3$ rounds."""
 EXAMPLE_CAPTION = "Figure 1: Overview of our PaperBanana framework. Given the source context and communicative intent, we first apply a Linear Planning Phase to retrieve relevant reference examples and synthesize a stylistically optimized description. We then use an Iterative Refinement Loop (consisting of Visualizer and Critic agents) to transform the description into visual output and conduct multi-round refinements to produce the final academic illustration."
 
 PIPELINE_DESCRIPTIONS = {
-    "demo_planner_critic": "Retriever \u2192 Planner \u2192 Visualizer \u2192 Critic \u2192 Visualizer (no Stylist)",
-    "demo_full": "Retriever \u2192 Planner \u2192 Stylist \u2192 Visualizer \u2192 Critic \u2192 Visualizer",
+    "demo_planner_critic": "Retriever → Planner → Visualizer → Critic → Visualizer (без Stylist)",
+    "demo_full": "Retriever → Planner → Stylist → Visualizer → Critic → Visualizer",
 }
 
 # ---------------------------------------------------------------------------
@@ -469,21 +469,21 @@ def build_app():
         # ================================================================
         # API KEYS ACCORDION
         # ================================================================
-        with gr.Accordion("API Keys", open=False):
+        with gr.Accordion("Ключи API", open=False):
             gr.Markdown(
-                "**You do not need both keys.** Fill **at least one**: **OpenRouter** *or* **Google (Gemini)**. "
-                "If both are set, OpenRouter is preferred for automatic routing when available."
+                "**Оба ключа не нужны.** Заполните **хотя бы один**: **OpenRouter** *или* **Google (Gemini)**. "
+                "Если заданы оба, OpenRouter используется приоритетно для автоматической маршрутизации."
             )
             with gr.Row():
                 openrouter_key_input = gr.Textbox(
-                    label="OpenRouter API Key (optional)", type="password", placeholder="sk-or-...",
+                    label="Ключ OpenRouter API (необязательно)", type="password", placeholder="sk-or-...",
                     value=get_config_val("api_keys", "openrouter_api_key", "OPENROUTER_API_KEY", ""),
                 )
                 google_key_input = gr.Textbox(
-                    label="Google API Key (optional)", type="password", placeholder="AIza...",
+                    label="Ключ Google API (необязательно)", type="password", placeholder="AIza...",
                     value=get_config_val("api_keys", "google_api_key", "GOOGLE_API_KEY", ""),
                 )
-            gr.Markdown("*Keys are used only for this session and never stored.*")
+            gr.Markdown("*Ключи используются только для текущей сессии и не сохраняются.*")
 
             def apply_keys(or_key, g_key):
                 if or_key:
@@ -493,13 +493,13 @@ def build_app():
                 from utils.generation_utils import reinitialize_clients
                 initialized = reinitialize_clients()
                 if initialized:
-                    return f"Clients initialized: {', '.join(initialized)}."
+                    return f"Клиенты инициализированы: {', '.join(initialized)}."
                 return (
-                    "Warning: no API clients could be initialized. "
-                    "Enter at least one key—OpenRouter or Google (Gemini)."
+                    "Внимание: не удалось инициализировать ни одного API-клиента. "
+                    "Введите хотя бы один ключ — OpenRouter или Google (Gemini)."
                 )
 
-            apply_keys_btn = gr.Button("Apply Keys", size="sm")
+            apply_keys_btn = gr.Button("Применить ключи", size="sm")
             keys_status = gr.Textbox(visible=False)
             apply_keys_btn.click(apply_keys, inputs=[openrouter_key_input, google_key_input], outputs=[keys_status])
 
@@ -511,26 +511,26 @@ def build_app():
             # ============================================================
             # TAB 1 — Generate Candidates
             # ============================================================
-            with gr.TabItem("Generate Candidates"):
+            with gr.TabItem("Генерация кандидатов"):
                 with gr.Row():
                     # ---------- LEFT COLUMN: SETTINGS ----------
                     with gr.Column(scale=1, min_width=280, elem_classes=["left-settings"]):
-                        gr.HTML('<p class="section-label">Settings</p>')
+                        gr.HTML('<p class="section-label">Настройки</p>')
 
                         pipeline_mode = gr.Dropdown(
                             choices=["demo_planner_critic", "demo_full"],
                             value="demo_full",
-                            label="Pipeline Mode",
-                            info="Select which agent pipeline to use",
+                            label="Режим конвейера",
+                            info="Выберите конвейер агентов",
                         )
                         task_name = gr.Dropdown(
                             choices=["diagram", "plot"],
                             value="diagram",
-                            label="Output Type",
-                            info="Generate a scientific diagram or a statistical plot",
+                            label="Тип вывода",
+                            info="Генерировать научную диаграмму или статистический график",
                         )
                         pipeline_desc = gr.Textbox(
-                            label="Pipeline Description",
+                            label="Описание конвейера",
                             value=PIPELINE_DESCRIPTIONS["demo_full"],
                             interactive=False, lines=2,
                         )
@@ -543,67 +543,67 @@ def build_app():
                         retrieval_setting = gr.Dropdown(
                             choices=["auto", "manual", "random", "none"],
                             value="auto",
-                            label="Retrieval Setting",
-                            info="How to retrieve reference examples",
+                            label="Настройка извлечения",
+                            info="Способ извлечения эталонных примеров",
                         )
                         num_candidates = gr.Number(
                             value=10, minimum=1, maximum=20, step=1,
-                            label="Number of Candidates",
+                            label="Количество кандидатов",
                         )
                         aspect_ratio = gr.Dropdown(
                             choices=["16:9", "21:9", "3:2"],
                             value="21:9",
-                            label="Aspect Ratio",
+                            label="Соотношение сторон",
                         )
                         figure_size = gr.Dropdown(
                             choices=["1-3cm", "4-6cm", "7-9cm", "10-13cm", "14-17cm"],
                             value="7-9cm",
-                            label="Figure Size",
+                            label="Размер фигуры",
                         )
                         max_critic_rounds = gr.Slider(
                             minimum=1, maximum=5, value=3, step=1,
-                            label="Max Critic Rounds",
+                            label="Макс. раундов критика",
                         )
                         main_model_name = gr.Textbox(
-                            label="Model Name",
-                            info="Model name to use for reasoning",
+                            label="Имя модели",
+                            info="Модель для рассуждений",
                             value=default_main_model,
                         )
                         image_model_name = gr.Textbox(
-                            label="Image Generation Model",
-                            info="Model for generating diagram images",
+                            label="Модель генерации изображений",
+                            info="Модель для генерации изображений диаграмм",
                             value=default_image_model,
                         )
                         save_results = gr.Dropdown(
                             choices=["Yes", "No"],
                             value="Yes",
-                            label="Save Results",
+                            label="Сохранять результаты",
                         )
 
                     # ---------- RIGHT COLUMN: INPUT + OUTPUT ----------
                     with gr.Column(scale=3):
-                        gr.HTML('<p class="section-label">Input</p>')
+                        gr.HTML('<p class="section-label">Ввод</p>')
 
                         with gr.Row():
                             method_example = gr.Dropdown(
                                 choices=["None", "PaperBanana Framework"],
                                 value="PaperBanana Framework",
-                                label="Load Example (Method)",
+                                label="Загрузить пример (Метод)",
                             )
                             caption_example = gr.Dropdown(
                                 choices=["None", "PaperBanana Framework"],
                                 value="PaperBanana Framework",
-                                label="Load Example (Caption)",
+                                label="Загрузить пример (Подпись)",
                             )
 
                         with gr.Row():
                             method_content = gr.Textbox(
-                                label="Method Content / Plot Data",
+                                label="Содержание метода / Данные графика",
                                 value=EXAMPLE_METHOD,
                                 lines=12, max_lines=30,
                             )
                             caption_input = gr.Textbox(
-                                label="Figure Caption / Visual Intent",
+                                label="Подпись к фигуре / Визуальное намерение",
                                 value=EXAMPLE_CAPTION,
                                 lines=12, max_lines=30,
                             )
@@ -618,23 +618,23 @@ def build_app():
                         caption_example.change(load_caption_example, inputs=[caption_example], outputs=[caption_input])
 
                         generate_btn = gr.Button(
-                            "✨ Generate Candidates", variant="primary",
+                            "✨ Сгенерировать кандидатов", variant="primary",
                             elem_classes=["orange-btn"], size="lg",
                         )
 
                 # ---- Status ----
-                status_text = gr.Textbox(label="Status", interactive=False, lines=1)
+                status_text = gr.Textbox(label="Статус", interactive=False, lines=1)
 
-                # ---- Results ----
-                gr.HTML('<p class="section-label" style="margin-top:16px;">Generated Candidates</p>')
+                # ---- Результаты ----
+                gr.HTML('<p class="section-label" style="margin-top:16px;">Сгенерированные кандидаты</p>')
                 results_gallery = gr.Gallery(
-                    label="Generated Candidates",
+                    label="Сгенерированные кандидаты",
                     columns=3, height="auto", object_fit="contain",
                 )
-                with gr.Accordion("Evolution Timeline", open=False):
+                with gr.Accordion("Таймлайн эволюции", open=False):
                     evolution_html = gr.HTML("")
-                with gr.Accordion("Download All (ZIP)", open=False):
-                    zip_file_output = gr.File(label="ZIP download")
+                with gr.Accordion("Скачать всё (ZIP)", open=False):
+                    zip_file_output = gr.File(label="Скачивание ZIP")
 
                 # ---- Generate handler ----
                 def run_generate(
@@ -644,13 +644,13 @@ def build_app():
                     progress=gr.Progress(track_tqdm=True),
                 ):
                     if not method_text or not caption_text:
-                        raise gr.Error("Please provide both method content and caption.")
+                        raise gr.Error("Укажите содержание метода и подпись.")
 
                     n_cands = int(n_cands)
                     max_rounds = int(max_rounds)
                     timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-                    progress(0, desc="Preparing inputs...")
+                    progress(0, desc="Подготовка входных данных...")
                     input_data = create_sample_inputs(
                         method_content=method_text, caption=caption_text,
                         aspect_ratio=ar, figure_size=figure_size,
@@ -658,7 +658,7 @@ def build_app():
                         task_name=task_name,
                     )
 
-                    progress(0.1, desc=f"Generating {n_cands} candidates in parallel...")
+                    progress(0.1, desc=f"Параллельная генерация {n_cands} кандидатов...")
                     try:
                         loop = asyncio.new_event_loop()
                         results = loop.run_until_complete(
@@ -670,9 +670,9 @@ def build_app():
                         )
                         loop.close()
                     except Exception as e:
-                        raise gr.Error(f"Generation failed: {e}")
+                        raise gr.Error(f"Ошибка генерации: {e}")
 
-                    progress(0.9, desc="Saving results...")
+                    progress(0.9, desc="Сохранение результатов...")
 
                     # Save JSON
                     results_dir = Path(__file__).parent / "results" / "demo"
@@ -691,17 +691,17 @@ def build_app():
                     for idx, res in enumerate(results):
                         img, _ = get_final_image(res, pipe_mode)
                         if img:
-                            gallery_images.append((img, f"Candidate {idx}"))
+                            gallery_images.append((img, f"Кандидат {idx}"))
 
                     # Build evolution HTML
                     evo_parts = []
                     for idx, res in enumerate(results):
                         stages = get_evolution_stages(res, pipe_mode)
                         if stages:
-                            evo_parts.append(f"<h4>Candidate {idx} ({len(stages)} stages)</h4>")
+                            evo_parts.append(f"<h4>Кандидат {idx} ({len(stages)} этапов)</h4>")
                             for st in stages:
                                 evo_parts.append(f'<span class="evo-stage-title">{st["name"]}</span>: {st["description"]}<br/>')
-                    evo_html = "".join(evo_parts) if evo_parts else "<p>No evolution data available.</p>"
+                    evo_html = "".join(evo_parts) if evo_parts else "<p>Данные эволюции отсутствуют.</p>"
 
                     # Build ZIP
                     zip_path = None
@@ -723,11 +723,11 @@ def build_app():
                         except Exception:
                             pass
 
-                    status = f"Generated {len(results)} candidates at {datetime.now().strftime('%H:%M:%S')}."
+                    status = f"Сгенерировано {len(results)} кандидатов в {datetime.now().strftime('%H:%M:%S')}."
                     if json_filename and Path(str(json_filename)).exists():
-                        status += f" JSON saved to {Path(str(json_filename)).name}."
+                        status += f" JSON сохранён: {Path(str(json_filename)).name}."
 
-                    progress(1.0, desc="Done!")
+                    progress(1.0, desc="Готово!")
                     return (
                         gallery_images,       # results_gallery
                         evo_html,             # evolution_html
@@ -755,35 +755,35 @@ def build_app():
             # ============================================================
             # TAB 2 — Refine Image
             # ============================================================
-            with gr.TabItem("Refine Image"):
-                gr.Markdown("### Refine and upscale your diagram to high resolution (2K/4K)")
-                gr.Markdown("Upload an image, describe changes, and get a high-res version.")
+            with gr.TabItem("Уточнение изображения"):
+                gr.Markdown("### Уточните и увеличьте разрешение диаграммы до 2K/4K")
+                gr.Markdown("Загрузите изображение, опишите изменения и получите версию в высоком разрешении.")
 
                 with gr.Row():
                     with gr.Column():
-                        refine_upload = gr.Image(label="Upload Image", type="pil", height=400)
+                        refine_upload = gr.Image(label="Загрузить изображение", type="pil", height=400)
                     with gr.Column():
                         refine_prompt = gr.Textbox(
-                            label="Edit Instructions", lines=6,
-                            placeholder="E.g., 'Change the color scheme to match academic paper style' or 'Keep everything the same but output in higher resolution'",
+                            label="Инструкции по редактированию", lines=6,
+                            placeholder="Например, «Измените цветовую схему под стиль академической статьи» или «Оставьте всё как есть, но увеличьте разрешение»",
                         )
                         with gr.Row():
-                            refine_resolution = gr.Dropdown(choices=["2K", "4K"], value="2K", label="Resolution")
-                            refine_aspect = gr.Dropdown(choices=["21:9", "16:9", "3:2"], value="21:9", label="Aspect Ratio")
-                        refine_btn = gr.Button("Refine Image", variant="primary", elem_classes=["orange-btn"])
+                            refine_resolution = gr.Dropdown(choices=["2K", "4K"], value="2K", label="Разрешение")
+                            refine_aspect = gr.Dropdown(choices=["21:9", "16:9", "3:2"], value="21:9", label="Соотношение сторон")
+                        refine_btn = gr.Button("Уточнить изображение", variant="primary", elem_classes=["orange-btn"])
 
-                refine_status = gr.Textbox(label="Status", interactive=False)
+                refine_status = gr.Textbox(label="Статус", interactive=False)
 
                 with gr.Row():
-                    refine_before = gr.Image(label="Before", interactive=False, height=400)
-                    refine_after = gr.Image(label="After", interactive=False, height=400)
-                refine_download = gr.File(label="Download refined image")
+                    refine_before = gr.Image(label="До", interactive=False, height=400)
+                    refine_after = gr.Image(label="После", interactive=False, height=400)
+                refine_download = gr.File(label="Скачать уточнённое изображение")
 
                 def run_refine(pil_img, prompt, resolution, ar):
                     if pil_img is None:
-                        raise gr.Error("Please upload an image first.")
+                        raise gr.Error("Сначала загрузите изображение.")
                     if not prompt:
-                        raise gr.Error("Please provide edit instructions.")
+                        raise gr.Error("Укажите инструкции по редактированию.")
 
                     buf = BytesIO()
                     pil_img.save(buf, format="JPEG")
@@ -795,7 +795,7 @@ def build_app():
                             refine_image_with_nanoviz(image_bytes, prompt, aspect_ratio=ar, image_size=resolution)
                         )
                     except Exception as e:
-                        raise gr.Error(f"Refinement error: {e}")
+                        raise gr.Error(f"Ошибка уточнения: {e}")
                     finally:
                         loop.close()
 
@@ -825,7 +825,7 @@ def build_app():
         gr.HTML("""
         <div id="footer-row">
             <a href="https://github.com/dwzhu-pku/PaperBanana" target="_blank">GitHub</a> &middot;
-            <a href="https://arxiv.org/abs/2601.23265" target="_blank">Paper</a><br/>
+            <a href="https://arxiv.org/abs/2601.23265" target="_blank">Статья</a><br/>
             PaperBanana &copy; 2026
         </div>
         """)

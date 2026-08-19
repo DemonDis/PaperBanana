@@ -85,7 +85,7 @@ except Exception as e:
 
 st.set_page_config(
     layout="wide",
-    page_title="PaperBanana Parallel Demo",
+    page_title="PaperBanana Параллельный Demo",
     page_icon="🍌"
 )
 
@@ -307,13 +307,13 @@ def display_candidate_result(result, candidate_id, exp_mode):
     if final_image_key and final_image_key in result:
         img = base64_to_image(result[final_image_key])
         if img:
-            st.image(img, use_container_width=True, caption=f"Candidate {candidate_id} (Final)")
+            st.image(img, use_container_width=True, caption=f"Кандидат {candidate_id} (Финальный)")
             
             # Добавляем кнопку скачивания
             buffered = BytesIO()
             img.save(buffered, format="PNG")
             st.download_button(
-                label="⬇️ Download",
+                label="⬇️ Скачать",
                 data=buffered.getvalue(),
                 file_name=f"candidate_{candidate_id}.png",
                 mime="image/png",
@@ -321,15 +321,15 @@ def display_candidate_result(result, candidate_id, exp_mode):
                 use_container_width=True
             )
         else:
-            st.error(f"Failed to decode image for Candidate {candidate_id}")
+            st.error(f"Не удалось декодировать изображение для кандидата {candidate_id}")
     else:
-        st.warning(f"No image generated for Candidate {candidate_id}")
+        st.warning(f"Изображение не сгенерировано для кандидата {candidate_id}")
     
     # Показываем таймлайн эволюции в раскрывающемся блоке
     stages = get_evolution_stages(result, exp_mode)
     if len(stages) > 1:
-        with st.expander(f"🔄 View Evolution Timeline ({len(stages)} stages)", expanded=False):
-            st.caption("See how the diagram evolved through different pipeline stages")
+                with st.expander(f"🔄 Таймлайн эволюции ({len(stages)} этапов)", expanded=False):
+                    st.caption("Как диаграмма эволюционировала на разных этапах конвейера")
             
             for idx, stage in enumerate(stages):
                 st.markdown(f"### {stage['name']}")
@@ -342,17 +342,17 @@ def display_candidate_result(result, candidate_id, exp_mode):
                 
                 # Показываем описание
                 if stage['desc_key'] in result:
-                    with st.expander(f"📝 Description", expanded=False):
+                    with st.expander(f"📝 Описание", expanded=False):
                         cleaned_desc = clean_text(result[stage['desc_key']])
                         st.write(cleaned_desc)
                 
                 # Показываем предложения критика, если есть
                 if 'suggestions_key' in stage and stage['suggestions_key'] in result:
                     suggestions = result[stage['suggestions_key']]
-                    with st.expander(f"💡 Critic Suggestions", expanded=False):
+                    with st.expander(f"💡 Предложения критика", expanded=False):
                         cleaned_sugg = clean_text(suggestions)
                         if cleaned_sugg.strip() == "No changes needed.":
-                            st.success("✅ No changes needed - iteration stopped.")
+                            st.success("✅ Изменения не требуются — итерация остановлена.")
                         else:
                             st.write(cleaned_sugg)
                 
@@ -361,49 +361,49 @@ def display_candidate_result(result, candidate_id, exp_mode):
                     st.divider()
     else:
         # Если только один этап, показываем описание в простом раскрывающемся блоке
-        with st.expander(f"📝 View Description", expanded=False):
+        with st.expander(f"📝 Описание", expanded=False):
             if final_desc_key and final_desc_key in result:
                 # Очищаем текст от недопустимых символов UTF-8
                 cleaned_desc = clean_text(result[final_desc_key])
                 st.write(cleaned_desc)
             else:
-                st.info("No description available")
+                st.info("Описание отсутствует")
 
 def main():
     st.title("🍌 PaperBanana Demo")
-    st.markdown("AI-powered scientific diagram generation and refinement")
+    st.markdown("Генерация и уточнение научных диаграмм с помощью ИИ")
     
     # Создаём вкладки
-    tab1, tab2 = st.tabs(["📊 Generate Candidates", "✨ Refine Image"])
+    tab1, tab2 = st.tabs(["📊 Генерация кандидатов", "✨ Уточнение изображения"])
     
     # ==================== ВКЛАДКА 1: Генерация кандидатов ====================
     with tab1:
-        st.markdown("### Generate multiple diagram candidates from your method section and caption")
+        st.markdown("### Генерация нескольких кандидатов диаграмм из раздела метода и подписи")
         
         # Конфигурация боковой панели для вкладки 1
         with st.sidebar:
-            st.title("⚙️ Generation Settings")
+            st.title("⚙️ Настройки генерации")
             
             exp_mode = st.selectbox(
                 "Pipeline Mode",
                 ["demo_full", "demo_planner_critic"],
                 index=0,
                 key="tab1_exp_mode",
-                help="Select which agent pipeline to use"
+                help="Выберите конвейер агентов"
             )
             
             mode_info = {
-                "demo_planner_critic": "Retriever → Planner → Visualizer → Critic → Visualizer (no Stylist)",
-                "demo_full": "Retriever → Planner → Stylist → Visualizer → Critic → Visualizer. (The stylist can make the diagram more aesthetically pleasing, but prone to be overly simplied. So we recommend trying both modes and select the best one)"
+                "demo_planner_critic": "Retriever → Planner → Visualizer → Critic → Visualizer (без Stylist)",
+                "demo_full": "Retriever → Planner → Stylist → Visualizer → Critic → Visualizer. (Stylist может сделать диаграмму более эстетичной, но склонен к чрезмерному упрощению. Рекомендуем попробовать оба режима и выбрать лучший)"
             }
-            st.info(f"**Pipeline:** {mode_info[exp_mode]}")
+            st.info(f"**Конвейер:** {mode_info[exp_mode]}")
             
             retrieval_setting = st.selectbox(
                 "Retrieval Setting",
                 ["auto", "manual", "random", "none"],
                 index=0,
                 key="tab1_retrieval_setting",
-                help="How to retrieve reference examples: auto (automatic selection), manual (use specified references), random (random selection), none (no retrieval)"
+                help="Способ извлечения эталонных примеров: auto (автоматический выбор), manual (указанные эталоны), random (случайный выбор), none (без извлечения)"
             )
 
             task_name = st.selectbox(
@@ -411,7 +411,7 @@ def main():
                 ["diagram", "plot"],
                 index=0,
                 key="tab1_task_name",
-                help="Generate a scientific diagram or a statistical plot",
+                help="Генерировать научную диаграмму или статистический график",
             )
             
             num_candidates = st.number_input(
@@ -420,14 +420,14 @@ def main():
                 max_value=20,
                 value=10,
                 key="tab1_num_candidates",
-                help="How many parallel candidates to generate"
+                help="Сколько параллельных кандидатов генерировать"
             )
             
             aspect_ratio = st.selectbox(
                 "Aspect Ratio",
                 ["21:9", "16:9", "3:2"],
                 key="tab1_aspect_ratio",
-                help="Aspect ratio for the generated diagrams"
+                help="Соотношение сторон для генерируемых диаграмм"
             )
 
             figure_size = st.selectbox(
@@ -435,7 +435,7 @@ def main():
                 ["1-3cm", "4-6cm", "7-9cm", "10-13cm", "14-17cm"],
                 index=2,
                 key="tab1_figure_size",
-                help="Target figure size; providers that support image_size map this to 1k, 2k, or 4k",
+                help="Целевой размер фигуры; провайдеры с поддержкой image_size сопоставляют это с 1k, 2k или 4k",
             )
             
             max_critic_rounds = st.number_input(
@@ -444,7 +444,7 @@ def main():
                 max_value=5,
                 value=3,
                 key="tab1_max_critic_rounds",
-                help="Maximum number of critic refinement iterations"
+                help="Максимальное количество итераций уточнения критиком"
             )
             
             default_model = get_config_val("defaults", "main_model_name", "MAIN_MODEL_NAME", "gemini-3.1-pro-preview")
@@ -455,18 +455,18 @@ def main():
                 text_model_presets.insert(0, "gemini-3.1-pro-preview")
             text_model_presets.append("Custom")
             text_model_selection = st.selectbox(
-                "Main Model Name",
+                "Имя основной модели",
                 text_model_presets,
                 index=0,
                 key="tab1_model_name",
-                help="Vision-language model for understanding and describing diagrams"
+                help="Модель языка и зрения для понимания и описания диаграмм"
             )
             if text_model_selection == "Custom":
                 main_model_name = st.text_input(
-                    "Custom Main Model",
+                    "Пользовательская основная модель",
                     value="",
                     key="tab1_main_model_name_custom",
-                    placeholder="e.g., openrouter/google/gemini-3.1-pro"
+                    placeholder="например, openrouter/google/gemini-3.1-pro"
                 )
             else:
                 main_model_name = text_model_selection
@@ -479,18 +479,18 @@ def main():
                 image_model_presets.insert(0, "gemini-3.1-flash-image-preview")
             image_model_presets.append("Custom")
             image_model_selection = st.selectbox(
-                "Image Generation Model Name",
+                "Имя модели генерации изображений",
                 image_model_presets,
                 index=0,
                 key="tab1_image_model_name",
-                help="Model for generating diagram images"
+                help="Модель для генерации изображений диаграмм"
             )
             if image_model_selection == "Custom":
                 image_gen_model_name = st.text_input(
-                    "Custom Image Generation Model",
+                    "Пользовательская модель генерации изображений",
                     value="",
                     key="tab1_image_gen_model_name_custom",
-                    placeholder="e.g., openrouter/openai/gpt-image-1"
+                    placeholder="например, openrouter/openai/gpt-image-1"
                 )
             else:
                 image_gen_model_name = image_model_selection
@@ -498,7 +498,7 @@ def main():
         st.divider()
         
         # Секция ввода
-        st.markdown("## 📝 Input")
+        st.markdown("## 📝 Ввод")
         
         # Примеры содержимого
         example_method = r"""## Methodology: The PaperBanana Framework
@@ -558,7 +558,7 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
         with col_input1:
             # Example selector for method content
             method_example = st.selectbox(
-                "Load Example (Method)",
+                "Загрузить пример (Метод)",
                 ["None", "PaperBanana Framework"],
                 key="method_example_selector"
             )
@@ -570,17 +570,17 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                 method_value = st.session_state.get("method_content", "")
             
             method_content = st.text_area(
-                "Method Section Content / Plot Data (Markdown or JSON recommended)",
+                "Содержание раздела метода / Данные графика (рекомендуется Markdown или JSON)",
                 value=method_value,
                 height=250,
-                placeholder="Paste the method section content here...",
-                help="The method section or plot data that describes the figure. Markdown and JSON are supported."
+                placeholder="Вставьте содержание раздела метода сюда...",
+                help="Раздел метода или данные графика, описывающие фигуру. Поддерживаются Markdown и JSON."
             )
         
         with col_input2:
             # Example selector for caption
             caption_example = st.selectbox(
-                "Load Example (Caption)",
+                "Загрузить пример (Подпись)",
                 ["None", "PaperBanana Framework"],
                 key="caption_example_selector"
             )
@@ -592,23 +592,23 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                 caption_value = st.session_state.get("caption", "")
             
             caption = st.text_area(
-                "Figure Caption / Visual Intent (Markdown recommended)",
+                "Подпись к фигуре / Визуальное намерение (рекомендуется Markdown)",
                 value=caption_value,
                 height=250,
-                placeholder="Enter the figure caption...",
-                help="The caption or description of the figure to generate. Markdown format is recommended."
+                placeholder="Введите подпись к фигуре...",
+                help="Подпись или описание генерируемой фигуры. Рекомендуется формат Markdown."
             )
         
         # Кнопка обработки
-        if st.button("🚀 Generate Candidates", type="primary", use_container_width=True):
+        if st.button("🚀 Сгенерировать кандидатов", type="primary", use_container_width=True):
             if not method_content or not caption:
-                st.error("Please provide both method content and caption!")
+                st.error("Укажите содержание метода и подпись!")
             else:
                 # Save to session state
                 st.session_state["method_content"] = method_content
                 st.session_state["caption"] = caption
                 
-                with st.spinner(f"Generating {num_candidates} candidates in parallel... This may take a few minutes."):
+                with st.spinner(f"Параллельная генерация {num_candidates} кандидатов... Это может занять несколько минут."):
                     # Create input data list
                     input_data_list = create_sample_inputs(
                         method_content=method_content,
@@ -652,12 +652,12 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                                 f.write(json_string)
                             
                             st.session_state["json_file"] = str(json_filename)
-                            st.success(f"✅ Successfully generated {len(results)} candidates!")
-                            st.info(f"💾 Results saved to: `{json_filename.name}`")
-                        except Exception as e:
-                            st.warning(f"⚠️ Generated {len(results)} candidates, but failed to save JSON: {e}")
+                        st.success(f"✅ Успешно сгенерировано {len(results)} кандидатов!")
+                            st.info(f"💾 Результаты сохранены: `{json_filename.name}`")
                     except Exception as e:
-                        st.error(f"Error during processing: {e}")
+                        st.warning(f"⚠️ Сгенерировано {len(results)} кандидатов, но не удалось сохранить JSON: {e}")
+                    except Exception as e:
+                        st.error(f"Ошибка во время обработки: {e}")
                         import traceback
                         st.code(traceback.format_exc())
         
@@ -668,8 +668,8 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
             timestamp = st.session_state.get("timestamp", "N/A")
             
             st.divider()
-            st.markdown("## 🎨 Generated Candidates")
-            st.caption(f"Generated at: {timestamp} | Pipeline: {mode_info.get(current_mode, current_mode)}")
+            st.markdown("## 🎨 Сгенерированные кандидаты")
+            st.caption(f"Сгенерировано: {timestamp} | Конвейер: {mode_info.get(current_mode, current_mode)}")
             
             # Показываем скачивание JSON-файла, если доступно
             if "json_file" in st.session_state:
@@ -677,12 +677,12 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                 if json_file_path.exists():
                     col1, col2 = st.columns([3, 1])
                     with col1:
-                        st.info(f"📄 Results saved to: `{json_file_path.relative_to(Path.cwd())}`")
+                        st.info(f"📄 Результаты сохранены: `{json_file_path.relative_to(Path.cwd())}`")
                     with col2:
                         with open(json_file_path, "r", encoding="utf-8") as f:
                             json_data = f.read()
                         st.download_button(
-                            label="⬇️ Download JSON",
+                            label="⬇️ Скачать JSON",
                             data=json_data,
                             file_name=json_file_path.name,
                             mime="application/json",
@@ -703,7 +703,7 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
             
             # Добавляем кнопку скачивания ZIP
             st.divider()
-            st.markdown("### 💾 Batch Download")
+            st.markdown("### 💾 Массовое скачивание")
             
             try:
                 import zipfile
@@ -728,31 +728,31 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                 
                 zip_buffer.seek(0)
                 st.download_button(
-                    label="⬇️ Download ZIP",
+                    label="⬇️ Скачать ZIP",
                     data=zip_buffer.getvalue(),
                     file_name=f"paperbanana_candidates_{datetime.now().strftime('%Y%m%d_%H%M%S')}.zip",
                     mime="application/zip",
                     use_container_width=True
                 )
-                st.success("ZIP file ready for download!")
+                st.success("ZIP-файл готов к скачиванию!")
             except Exception as e:
-                st.error(f"Failed to create ZIP: {e}")
+                st.error(f"Не удалось создать ZIP: {e}")
     
     # ==================== ВКЛАДКА 2: Уточнение изображения ====================
     with tab2:
-        st.markdown("### Refine and upscale your diagram to high resolution (2K/4K)")
-        st.caption("Upload an image from the candidates or any diagram, describe changes, and generate a high-res version")
+        st.markdown("### Уточните и увеличьте разрешение диаграммы до 2K/4K")
+        st.caption("Загрузите изображение из кандидатов или любую диаграмму, опишите изменения и сгенерируйте версию в высоком разрешении")
         
         # Боковая панель настроек уточнения
         with st.sidebar:
-            st.title("✨ Refinement Settings")
+            st.title("✨ Настройки уточнения")
             
             refine_resolution = st.selectbox(
-                "Target Resolution",
+                "Целевое разрешение",
                 ["2K", "4K"],
                 index=0,
                 key="refine_resolution",
-                help="Higher resolution takes longer but produces better quality"
+                help="Большее разрешение занимает больше времени, но даёт лучшее качество"
             )
             
             refine_aspect_ratio = st.selectbox(
@@ -760,17 +760,17 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                 ["21:9", "16:9", "3:2"],
                 index=0,
                 key="refine_aspect_ratio",
-                help="Aspect ratio for the refined image"
+                help="Соотношение сторон для уточнённого изображения"
             )
         
         st.divider()
         
         # Секция загрузки
-        st.markdown("## 📤 Upload Image")
+        st.markdown("## 📤 Загрузка изображения")
         uploaded_file = st.file_uploader(
-            "Choose an image file",
+            "Выберите файл изображения",
             type=["png", "jpg", "jpeg"],
-            help="Upload the diagram you want to refine"
+            help="Загрузите диаграмму для уточнения"
         )
         
         if uploaded_file is not None:
@@ -779,24 +779,24 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
             col1, col2 = st.columns(2)
             
             with col1:
-                st.markdown("### Original Image")
+                st.markdown("### Оригинальное изображение")
                 st.image(uploaded_image, use_container_width=True)
             
             with col2:
-                st.markdown("### Edit Instructions")
+                st.markdown("### Инструкции по редактированию")
                 edit_prompt = st.text_area(
-                    "Describe the changes you want",
+                    "Опишите нужные изменения",
                     height=200,
-                    placeholder="E.g., 'Change the color scheme to match academic paper style' or 'Make the text larger and bolder' or 'Keep everything the same but output in higher resolution'",
-                    help="Describe what you want to change or use 'Keep everything the same' for just upscaling",
+                    placeholder="Например, «Измените цветовую схему под стиль академической статьи» или «Сделайте текст крупнее и жирнее» или «Оставьте всё как есть, но увеличьте разрешение»",
+                    help="Опишите, что вы хотите изменить, или используйте «Оставьте всё как есть» для простого увеличения разрешения",
                     key="edit_prompt"
                 )
                 
-                if st.button("✨ Refine Image", type="primary", use_container_width=True):
+                if st.button("✨ Уточнить изображение", type="primary", use_container_width=True):
                     if not edit_prompt:
-                        st.error("Please provide edit instructions!")
+                        st.error("Укажите инструкции по редактированию!")
                     else:
-                        with st.spinner(f"Refining image to {refine_resolution} resolution... This may take a minute."):
+                        with st.spinner(f"Уточнение изображения до разрешения {refine_resolution}... Это может занять минуту."):
                             try:
                                 # Конвертируем PIL изображение в байты
                                 img_byte_arr = BytesIO()
@@ -821,30 +821,30 @@ The framework extends to statistical plots by adjusting the Visualizer and Criti
                                 else:
                                     st.error(message)
                             except Exception as e:
-                                st.error(f"Error during refinement: {e}")
+                                st.error(f"Ошибка во время уточнения: {e}")
                                 import traceback
                                 st.code(traceback.format_exc())
             
             # Отображаем результат уточнения, если доступен
             if "refined_image" in st.session_state:
                 st.divider()
-                st.markdown("## 🎨 Refined Result")
-                st.caption(f"Generated at: {st.session_state.get('refine_timestamp', 'N/A')} | Resolution: {refine_resolution}")
+                st.markdown("## 🎨 Результат уточнения")
+                st.caption(f"Сгенерировано: {st.session_state.get('refine_timestamp', 'N/A')} | Разрешение: {refine_resolution}")
                 
                 col1, col2 = st.columns(2)
                 
                 with col1:
-                    st.markdown("### Before")
+                    st.markdown("### До")
                     st.image(uploaded_image, use_container_width=True)
                 
                 with col2:
-                    st.markdown(f"### After ({refine_resolution})")
+                    st.markdown(f"### После ({refine_resolution})")
                     refined_image = Image.open(BytesIO(st.session_state["refined_image"]))
                     st.image(refined_image, use_container_width=True)
                     
                     # Кнопка скачивания
                     st.download_button(
-                        label=f"⬇️ Download {refine_resolution} Image",
+                        label=f"⬇️ Скачать изображение {refine_resolution}",
                         data=st.session_state["refined_image"],
                         file_name=f"refined_{refine_resolution}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png",
                         mime="image/png",
