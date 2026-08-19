@@ -1,129 +1,126 @@
 # <div align="center">PaperBanana 🍌</div>
-<div align="center">Dawei Zhu, Rui Meng, Yale Song, Xiyu Wei, Sujian Li, Tomas Pfister and Jinsung yoon
+<div align="center">Давэй Чжу (Dawei Zhu), Жуй Мэн (Rui Meng), Йель Сун (Yale Song), Сию Вэй (Xiyu Wei), Суцзянь Ли (Sujian Li), Томас Пфистер (Tomas Pfister) и Чжинсунг Юн (Jinsung yoon)
 <br><br></div>
 
 <div align="center">
-<a href="https://huggingface.co/papers/2601.23265"><img src="assets/paper-page-xl.svg" alt="Paper page on HF"></a>
-<a href="https://huggingface.co/datasets/dwzhu/PaperBananaBench"><img src="assets/dataset-on-hf-xl.svg" alt="Dataset on HF"></a>
-<a href="https://huggingface.co/spaces/dwzhu/PaperBanana"><img src="assets/spaces-on-hf-xl.png" height="48" alt="Demo on HF Spaces"></a>
+<a href="https://huggingface.co/papers/2601.23265"><img src="assets/paper-page-xl.svg" alt="Страница статьи на HF"></a>
+<a href="https://huggingface.co/datasets/dwzhu/PaperBananaBench"><img src="assets/dataset-on-hf-xl.svg" alt="Датасет на HF"></a>
+<a href="https://huggingface.co/spaces/dwzhu/PaperBanana"><img src="assets/spaces-on-hf-xl.png" height="48" alt="Демо на HF Spaces"></a>
 </div>
 
-> Hi everyone! The original version of PaperBanana is already open-sourced under Google-Research as [PaperVizAgent](https://github.com/google-research/papervizagent). 
-This repository forked the content of that repo and aims to keep evolving toward better support for academic paper illustration—though we have made solid progress, there is still a long way to go for more reliable generation and for more diverse, complex scenarios. PaperBanana is intended to be a fully open-source project dedicated to facilitating academic illustration for all researchers. Our goal is simply to benefit the community, so we currently have no plans to use it for commercial purposes.
+> Всем привет! Оригинальная версия PaperBanana уже открыта в исходном коде под эгидой Google-Research как [PaperVizAgent](https://github.com/google-research/papervizagent). 
+Этот репозиторий является форком того репозитория и нацелен на дальнейшее развитие для лучшей поддержки создания академических иллюстраций к статьям — хотя мы и достигли значительного прогресса, впереди еще долгий путь к более надежной генерации и поддержке более разнообразных и сложных сценариев. PaperBanana задуман как полностью открытый проект, призванный облегчить создание академических иллюстраций для всех исследователей. Наша цель — принести пользу сообществу, поэтому в настоящее время у нас нет планов использовать его в коммерческих целях.
 
+## Последние новости
+- **2026-03-24**: PaperBanana теперь [размещен на Hugging Face Spaces](https://huggingface.co/spaces/dwzhu/PaperBanana). Большое спасибо команде Hugging Face за их поддержку.
+- **2026-03-11**: Опубликован PaperBanana как [навык ClawHub](https://clawhub.ai/skills/paperbanana) — установите с помощью `clawhub install paperbanana`.
+- **2026-03-11**: Добавлен выбор модели в UI Streamlit — теперь поддерживается выбор как основной модели (VLM), так и модели генерации изображений, с предустановленными параметрами и пользовательским вводом.
+- **2026-03-11**: Добавлена поддержка OpenRouter — используйте модели от OpenAI, Anthropic и других провайдеров через единый API.
+- **2026-03-11**: Добавлен раздел "Авторы" (Contributors) с поддержкой бота all-contributors.
 
+## Список задач (TODO)
+- [ ] Добавить поддержку использования вручную выбранных примеров. Предоставить **дружественный** пользовательский интерфейс.
+- [ ] Загрузить код для генерации статистических графиков.
+- [ ] Загрузить код для улучшения существующих диаграмм на основе руководства по стилю.
+- [ ] Расширить набор эталонных изображений для поддержки большего количества областей, помимо компьютерных наук.
 
+**PaperBanana** — это многоагентный фреймворк на основе референсов (эталонов) для автоматизированной генерации академических иллюстраций. Действуя как творческая команда специализированных агентов, он преобразует исходный научный контент в диаграммы и графики качества публикаций с помощью организованного конвейера из агентов: **Retriever (Искатель), Planner (Планировщик), Stylist (Стилист), Visualizer (Визуализатор) и Critic (Критик)**. Фреймворк использует контекстное обучение на эталонных примерах и итеративное улучшение для создания эстетически привлекательных и семантически точных научных иллюстраций.
 
-## Latest News
-- **2026-03-24**: PaperBanana is now [hosted on Hugging Face Spaces](https://huggingface.co/spaces/dwzhu/PaperBanana). Many thanks to the Hugging Face team for their support.
-- **2026-03-11**: Published PaperBanana as a [ClawHub skill](https://clawhub.ai/skills/paperbanana) — install with `clawhub install paperbanana`.
-- **2026-03-11**: Added model selection to Streamlit UI — now supports choosing both Main Model (VLM) and Image Generation Model, with preset options and custom input.
-- **2026-03-11**: Added OpenRouter support — use models from OpenAI, Anthropic, and other providers via a unified API.
-- **2026-03-11**: Added Contributors section with all-contributors bot support.
+Вот некоторые примеры диаграмм и графиков, сгенерированных PaperBanana:
+![Примеры](assets/teaser_figure.jpg)
 
-## TODO List
-- [ ] Add support for using manually selected examples. Provide **a** user-friendly interface.
-- [ ] Upload code for generating statistical plots.
-- [ ] Upload code for improving existing diagrams based on style guideline.
-- [ ] Expand the reference set to support more areas beyond computer science.
+## Обзор PaperBanana
 
-**PaperBanana** is a reference-driven multi-agent framework for automated academic illustration generation. Acting like a creative team of specialized agents, it transforms raw scientific content into publication-quality diagrams and plots through an orchestrated pipeline of **Retriever, Planner, Stylist, Visualizer, and Critic** agents. The framework leverages in-context learning from reference examples and iterative refinement to produce aesthetically pleasing and semantically accurate scientific illustrations.
+![Структура фреймворка PaperBanana](assets/method_diagram.png)
 
-Here are some example diagrams and plots generated by PaperBanana:
-![Examples](assets/teaser_figure.jpg)
+PaperBanana достигает высокого качества генерации академических иллюстраций за счет координации пяти специализированных агентов в структурированном конвейере:
 
-## Overview of PaperBanana
+1. **Агент Retriever (Искатель)**: Ищет наиболее релевантные эталонные диаграммы из тщательно подобранной коллекции для руководства последующими агентами.
+2. **Агент Planner (Планировщик)**: Переводит содержание методов и коммуникативное намерение во всеобъемлющие текстовые описания, используя контекстное обучение.
+3. **Агент Stylist (Стилист)**: Дорабатывает описания в соответствии с академическими эстетическими стандартами, используя автоматически синтезированные руководства по стилю.
+4. **Агент Visualizer (Визуализатор)**: Преобразует текстовые описания в визуальные результаты, используя передовые модели генерации изображений.
+5. **Агент Critic (Критик)**: Образует механизм усовершенствования с замкнутым циклом (closed-loop) вместе с Visualizer посредством многократных итеративных улучшений.
 
-![PaperBanana Framework](assets/method_diagram.png)
+## Быстрый старт
 
-PaperBanana achieves high-quality academic illustration generation by orchestrating five specialized agents in a structured pipeline:
-
-1. **Retriever Agent**: Identifies the most relevant reference diagrams from a curated collection to guide downstream agents
-2. **Planner Agent**: Translates method content and communicative intent into comprehensive textual descriptions using in-context learning
-3. **Stylist Agent**: Refines descriptions to adhere to academic aesthetic standards using automatically synthesized style guidelines
-4. **Visualizer Agent**: Transforms textual descriptions into visual outputs using state-of-the-art image generation models
-5. **Critic Agent**: Forms a closed-loop refinement mechanism with the Visualizer through multi-round iterative improvements
-
-## Quick Start
-
-### Step1: Clone the Repo
+### Шаг 1: Клонирование репозитория
 ```bash
 git clone https://github.com/dwzhu-pku/PaperBanana.git
 cd PaperBanana
 ```
 
-### Step2: Configuration
-PaperBanana supports configuring API keys from a YAML configuration file or via environment variables. 
+### Шаг 2: Настройка
+PaperBanana поддерживает настройку API-ключей через конфигурационный файл YAML или переменные окружения. 
 
-We recommend duplicate the `configs/model_config.template.yaml` file into `configs/model_config.yaml` to externalize all user configurations. This file is ignored by git to keep your api keys and configurations secret. In `model_config.yaml`, remember to fill in the two model names (`defaults.main_model_name` and `defaults.image_gen_model_name`) and set **at least one** API key under `api_keys`—for example only `google_api_key` (Gemini), or only `openrouter_api_key` (OpenRouter). **You do not need both; either one is enough.** If both are configured, OpenRouter is preferred for routing when available.
+Мы рекомендуем продублировать файл `configs/model_config.template.yaml` в `configs/model_config.yaml`, чтобы вынести все пользовательские конфигурации. Этот файл игнорируется git для сохранения в секрете ваших ключей API и конфигураций. В `model_config.yaml` не забудьте заполнить имена двух моделей (`defaults.main_model_name` и `defaults.image_gen_model_name`) и задать **хотя бы один** API-ключ в разделе `api_keys` — например, только `google_api_key` (Gemini) или только `openrouter_api_key` (OpenRouter). **Вам не нужны оба; любого одного достаточно.** Если настроены оба, предпочтение отдается OpenRouter (если он доступен) для маршрутизации.
 
-Note that if you need to generate many candidates simultaneously, you will require an API key that supports high concurrency.
+Обратите внимание, что если вам нужно генерировать много кандидатов одновременно, вам потребуется API-ключ, поддерживающий высокую степень параллелизма (concurrency).
 
-### Step3: Downloading the Dataset
-First download [PaperBananaBench](https://huggingface.co/datasets/dwzhu/PaperBananaBench), then place it under the `data` directory (e.g., `data/PaperBananaBench/`). The framework is designed to function gracefully without the dataset by bypassing the Retriever Agent's few-shot learning capability. If interested in the original PDFs, please download them from [PaperBananaDiagramPDFs](https://huggingface.co/datasets/dwzhu/PaperBananaDiagramPDFs).
+### Шаг 3: Загрузка датасета
+Сначала скачайте [PaperBananaBench](https://huggingface.co/datasets/dwzhu/PaperBananaBench), затем поместите его в директорию `data` (например, `data/PaperBananaBench/`). Фреймворк разработан таким образом, чтобы корректно работать и без датасета, обходя способность агента Retriever к few-shot обучению. Если вас интересуют оригинальные PDF-файлы, скачайте их с [PaperBananaDiagramPDFs](https://huggingface.co/datasets/dwzhu/PaperBananaDiagramPDFs).
 
-### Step4: Installing the Environment
-1. We use `uv` to manage Python packages. Please install `uv` following the instructions [here](https://docs.astral.sh/uv/getting-started/installation/).
+### Шаг 4: Установка окружения
+1. Мы используем `uv` для управления пакетами Python. Пожалуйста, установите `uv`, следуя инструкциям [здесь](https://docs.astral.sh/uv/getting-started/installation/).
 
-2. Create and activate a virtual environment
+2. Создайте и активируйте виртуальное окружение
     ```bash
-    uv venv # This will create a virtual environment in the current directory, under .venv/
-    source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+    uv venv # Это создаст виртуальное окружение в текущем каталоге, в папке .venv/
+    source .venv/bin/activate  # или .venv\Scripts\activate в Windows
     ```
 
-3. Install python 3.12
+3. Установите python 3.12
     ```bash
     uv python install 3.12
     ```
 
-4. Install required packages
+4. Установите необходимые пакеты
     ```bash
     uv pip install -r requirements.txt
     ```
 
-### Launch PaperBanana
+### Запуск PaperBanana
 
-#### Option 1: Gradio Web App (Recommended)
+#### Вариант 1: Веб-приложение Gradio (Рекомендуется)
 
-**Try it online — no setup required:**  
-👉 **[PaperBanana on Hugging Face Spaces](https://huggingface.co/spaces/dwzhu/PaperBanana)**
+**Попробуйте онлайн — настройка не требуется:**  
+👉 **[PaperBanana на Hugging Face Spaces](https://huggingface.co/spaces/dwzhu/PaperBanana)**
 
-To get started, enter your API key (OpenRouter or Google Gemini), then configure your desired parameters (pipeline mode, number of candidates, aspect ratio, etc.), paste your method section text and figure caption, and click **Generate**.
+Чтобы начать, введите свой API-ключ (OpenRouter или Google Gemini), затем настройте желаемые параметры (режим конвейера, количество кандидатов, соотношение сторон и т. д.), вставьте текст раздела "методы" и подпись к рисунку и нажмите **Generate (Сгенерировать)**.
 
-You can also run the Gradio app locally:
+Вы также можете запустить приложение Gradio локально:
 ```bash
 python app.py
 ```
 
-The Gradio **Figure Size** setting maps `1-3cm` and `4-6cm` to `1k`, `7-9cm` and `10-13cm` to `2k`, and `14-17cm` to `4k` for Gemini and OpenRouter image-generation calls. OpenAI `gpt-image` requests continue to use their existing fixed-size API path.
+Настройка **Figure Size (Размер рисунка)** в Gradio сопоставляет `1-3cm` и `4-6cm` с `1k`, `7-9cm` и `10-13cm` с `2k`, а `14-17cm` с `4k` для вызовов генерации изображений Gemini и OpenRouter. Запросы OpenAI `gpt-image` продолжают использовать существующий путь API с фиксированным размером.
 
-#### Option 2: Interactive Demo (Streamlit)
-The easiest way to launch PaperBanana is via the interactive Streamlit demo:
+#### Вариант 2: Интерактивная демонстрация (Streamlit)
+Самый простой способ запустить PaperBanana — это интерактивная демонстрация Streamlit:
 ```bash
 streamlit run demo.py
 ```
 
-The web interface provides two main workflows:
+Веб-интерфейс предлагает два основных рабочих процесса:
 
-**1. Generate Candidates Tab**:
-- Paste your method section content (Markdown recommended) and provide the figure caption.
-- Configure settings (pipeline mode, retrieval setting, number of candidates, aspect ratio, critic rounds).
-- Click "Generate Candidates" and wait for parallel processing.
-- View results in a grid with evolution timelines and download individual images or batch ZIP.
+**1. Вкладка "Generate Candidates" (Сгенерировать кандидатов)**:
+- Вставьте содержание раздела "методы" (рекомендуется формат Markdown) и укажите подпись к рисунку.
+- Настройте параметры (режим конвейера, настройки поиска (retrieval), количество кандидатов, соотношение сторон, количество раундов критика).
+- Нажмите "Generate Candidates" и дождитесь параллельной обработки.
+- Просматривайте результаты в виде сетки с таймлайнами эволюции и скачивайте отдельные изображения или все вместе в ZIP-архиве.
 
-**2. Refine Image Tab**:
-- Upload a generated candidate or any diagram.
-- Describe desired changes or request upscaling.
-- Select resolution (2K/4K) and aspect ratio.
-- Download the refined high-resolution output.
+**2. Вкладка "Refine Image" (Улучшить изображение)**:
+- Загрузите сгенерированного кандидата или любую диаграмму.
+- Опишите желаемые изменения или запросите увеличение разрешения (upscale).
+- Выберите разрешение (2K/4K) и соотношение сторон.
+- Скачайте улучшенный результат в высоком разрешении.
 
-#### Option 3: Command-Line Interface
-You can also run PaperBanana from the command line:
+#### Вариант 3: Интерфейс командной строки (CLI)
+Вы также можете запустить PaperBanana из командной строки:
 ```bash
-# Basic usage with default settings
+# Базовое использование с настройками по умолчанию
 python main.py
 
-# Advanced usage with custom settings
+# Продвинутое использование с пользовательскими настройками
 python main.py \
   --dataset_name "PaperBananaBench" \
   --task_name "diagram" \
@@ -131,7 +128,7 @@ python main.py \
   --exp_mode "dev_full" \
   --retrieval_setting "auto"
 
-# Legacy matplotlib plot-code generation with no few-shot retrieval
+# Устаревший способ (Legacy) генерации кода графиков matplotlib без few-shot поиска
 python main.py \
   --dataset_name "PaperBananaBench" \
   --task_name "plot" \
@@ -140,34 +137,34 @@ python main.py \
   --retrieval_setting "none"
 ```
 
-**Available Options:**
-- `--dataset_name`: Dataset to use (default: `PaperBananaBench`)
-- `--task_name`: Task type - `diagram` or `plot` (default: `diagram`)
-- `--split_name`: Dataset split (default: `test`)
-- `--exp_mode`: Experiment mode (see section below)
-- `--retrieval_setting`: Retrieval strategy - `auto`, `manual`, `random`, or `none` (default: `auto`)
+**Доступные опции:**
+- `--dataset_name`: Датасет для использования (по умолчанию: `PaperBananaBench`)
+- `--task_name`: Тип задачи - `diagram` (диаграмма) или `plot` (график) (по умолчанию: `diagram`)
+- `--split_name`: Выборка датасета (по умолчанию: `test`)
+- `--exp_mode`: Режим эксперимента (см. раздел ниже)
+- `--retrieval_setting`: Стратегия поиска - `auto`, `manual`, `random` или `none` (по умолчанию: `auto`)
 
-**Experiment Modes:**
-- `vanilla`: Direct generation without planning or refinement
+**Режимы экспериментов:**
+- `vanilla`: Прямая генерация без планирования или улучшения
 - `dev_planner`: Retriever → Planner → Visualizer
 - `dev_planner_stylist`: Retriever → Planner → Stylist → Visualizer
-- `dev_planner_critic`: Retriever → Planner → Visualizer → Critic (multi-round)
-- `dev_full`: Full pipeline with all agents
-- `demo_planner_critic`: Demo mode (Retriever → Planner → Visualizer → Critic; no Stylist) without evaluation
-- `demo_full`: Demo mode (full pipeline) without evaluation
+- `dev_planner_critic`: Retriever → Planner → Visualizer → Critic (несколько раундов)
+- `dev_full`: Полный конвейер со всеми агентами
+- `demo_planner_critic`: Демонстрационный режим (Retriever → Planner → Visualizer → Critic; без Stylist) без оценки (evaluation)
+- `demo_full`: Демонстрационный режим (полный конвейер) без оценки
 
-### Visualization Tools
+### Инструменты визуализации
 
-View pipeline evolution and intermediate results:
+Просмотр эволюции конвейера и промежуточных результатов:
 ```bash
 streamlit run visualize/show_pipeline_evolution.py
 ```
-View evaluation results:
+Просмотр результатов оценки:
 ```bash
 streamlit run visualize/show_referenced_eval.py
 ```
 
-## Project Structure
+## Структура проекта
 ```
 ├── .venv/
 │   └── ...
@@ -219,45 +216,44 @@ streamlit run visualize/show_referenced_eval.py
 └── README.md
 ```
 
-## Key Features
+## Ключевые особенности
 
-### Multi-Agent Pipeline
-- **Reference-Driven**: Learns from curated examples through generative retrieval
-- **Iterative Refinement**: Critic-Visualizer loop for progressive quality improvement
-- **Style-Aware**: Automatically synthesized aesthetic guidelines ensure academic quality
-- **Flexible Modes**: Multiple experiment modes for different use cases
+### Многоагентный конвейер
+- **На основе референсов (Reference-Driven)**: Обучается на тщательно подобранных примерах с помощью генеративного поиска.
+- **Итеративное улучшение (Iterative Refinement)**: Цикл "Критик-Визуализатор" (Critic-Visualizer) для постепенного улучшения качества.
+- **Учет стиля (Style-Aware)**: Автоматически синтезированные эстетические рекомендации обеспечивают академическое качество.
+- **Гибкие режимы (Flexible Modes)**: Несколько режимов экспериментов для различных сценариев использования.
 
-### Interactive Demo
-- **Parallel Generation**: Generate up to 20 candidate diagrams simultaneously
-- **Pipeline Visualization**: Track the evolution through Planner → Stylist → Critic stages
-- **High-Resolution Refinement**: Upscale to 2K/4K using Image Generation APIs
-- **Batch Export**: Download all candidates as PNG or ZIP
+### Интерактивная демонстрация
+- **Параллельная генерация**: Генерация до 20 диаграмм-кандидатов одновременно.
+- **Визуализация конвейера**: Отслеживание эволюции на этапах Планировщик → Стилист → Критик (Planner → Stylist → Critic).
+- **Улучшение до высокого разрешения**: Масштабирование (upscale) до 2K/4K с использованием API для генерации изображений.
+- **Пакетный экспорт**: Скачивание всех кандидатов в формате PNG или в виде ZIP-архива.
 
-### Extensible Design
-- **Modular Agents**: Each agent is independently configurable
-- **Task Support**: Handles both conceptual diagrams and data plots
-- **Evaluation Framework**: Built-in evaluation against ground truth with multiple metrics
-- **Async Processing**: Efficient batch processing with configurable concurrency
+### Расширяемый дизайн
+- **Модульные агенты**: Каждый агент может быть настроен независимо.
+- **Поддержка задач**: Обрабатывает как концептуальные диаграммы, так и графики данных.
+- **Фреймворк для оценки (Evaluation Framework)**: Встроенная оценка по сравнению с истинными (ground truth) данными с использованием нескольких метрик.
+- **Асинхронная обработка (Async Processing)**: Эффективная пакетная обработка с настраиваемым уровнем параллелизма.
 
-
-## Community Supports
-Around the release of this repo, we noticed several community efforts to reproduce this work. These efforts introduce unique perspectives that we find incredibly valuable. We highly recommend checking out these excellent contributions: (welcome to add if we missed something):
+## Поддержка сообщества
+На момент выпуска этого репозитория мы заметили несколько попыток сообщества воспроизвести эту работу. Эти попытки привносят уникальные точки зрения, которые мы считаем невероятно ценными. Мы настоятельно рекомендуем ознакомиться с этими отличными материалами (будем рады, если вы добавите то, что мы упустили):
 - https://github.com/llmsresearch/paperbanana
 - https://github.com/efradeca/freepaperbanana
-- https://github.com/elpsykongloo/PaperBanana-Pro — PaperBanana-Pro: a continuously updated Chinese-enhanced version with a more stable pipeline & more user-friendly experience
+- https://github.com/elpsykongloo/PaperBanana-Pro — PaperBanana-Pro: постоянно обновляемая улучшенная версия на китайском языке с более стабильным конвейером и более удобным интерфейсом.
 
-Additionally, alongside the development of this method, many other works have been exploring the same topic of automated academic illustration generation—some even enabling editable generated figures. Their contributions are essential to the ecosystem and are well worth your attention (likewise, welcome to add):
+Кроме того, параллельно с разработкой этого метода во многих других работах исследовалась та же тема автоматической генерации академических иллюстраций — некоторые даже позволяют создавать редактируемые рисунки. Их вклад имеет важное значение для экосистемы и заслуживает вашего внимания (также будем рады дополнениям):
 - https://github.com/ResearAI/AutoFigure-Edit
 - https://github.com/OpenDCAI/Paper2Any
 - https://github.com/BIT-DataLab/Edit-Banana
 
-Overall, we are encouraged that the fundamental capabilities of current models have brought us much closer to solving the problem of automated academic illustration generation. With the community's continued efforts, we believe that in the near future we will have high-quality automated drawing tools to accelerate academic research iteration and visual communication.
+В целом, нас воодушевляет то, что базовые возможности современных моделей значительно приблизили нас к решению проблемы автоматизированной генерации академических иллюстраций. При постоянных усилиях сообщества мы верим, что в ближайшем будущем у нас появятся высококачественные инструменты для автоматического рисования, которые ускорят процесс академических исследований и визуальную коммуникацию.
 
-We warmly welcome community contributions to make PaperBanana even better!
+Мы горячо приветствуем вклад сообщества, чтобы сделать PaperBanana еще лучше!
 
-## Contributors
+## Авторы (Contributors)
 
-Thanks to all contributors who helped improve PaperBanana, whether through code, bug reports, ideas, or feedback!
+Спасибо всем участникам, которые помогли улучшить PaperBanana, будь то код, сообщения об ошибках, идеи или отзывы!
 
 <!-- ALL-CONTRIBUTORS-LIST:START -->
 <!-- prettier-ignore-start -->
@@ -302,11 +298,11 @@ Thanks to all contributors who helped improve PaperBanana, whether through code,
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-## License
+## Лицензия
 Apache-2.0
 
-## Citation
-If you find this repo helpful, please cite our paper as follows:
+## Цитирование
+Если вы находите этот репозиторий полезным, пожалуйста, процитируйте нашу статью следующим образом:
 ```bibtex
 @article{zhu2026paperbanana,
   title={PaperBanana: Automating Academic Illustration for AI Scientists},
@@ -316,7 +312,7 @@ If you find this repo helpful, please cite our paper as follows:
 }
 ```
 
-## Disclaimer
-This is not an officially supported Google product. This project is not eligible for the [Google Open Source Software Vulnerability Rewards Program](https://bughunters.google.com/open-source-security).
+## Отказ от ответственности (Disclaimer)
+Это не официально поддерживаемый продукт Google. Этот проект не подпадает под действие программы [Google Open Source Software Vulnerability Rewards Program](https://bughunters.google.com/open-source-security).
 
-Our goal is simply to benefit the community, so currently we have no plans to use it for commercial purposes. The core methodology was developed during my internship at Google, and patents have been filed for these specific workflows by Google. While this doesn't impact open-source research efforts, it restricts third-party commercial applications using similar logic.
+Наша цель — исключительно принести пользу сообществу, поэтому в настоящее время у нас нет планов использовать его в коммерческих целях. Основная методология была разработана во время моей стажировки в Google, и Google подал заявки на патенты на эти конкретные рабочие процессы. Хотя это не влияет на исследовательскую деятельность в области open-source, это ограничивает сторонние коммерческие приложения, использующие аналогичную логику.
